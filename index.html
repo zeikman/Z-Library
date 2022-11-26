@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>jQWidgets - EnhanceDataGrid</title>
+
+    <link rel="stylesheet" href="bootstrap-5.2.3/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="jquery-confirm-v3.3.4/css/jquery-confirm.css" type="text/css" />
+
+    <link rel="stylesheet" href="jqwidgets-ver14.0.0/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link rel="stylesheet" href="jqwidgets-ver14.0.0/jqwidgets/styles/jqx.material.css" type="text/css" />
+    <!-- <link rel="stylesheet" href="jqwidgets-ver14.0.0/jqwidgets/styles/jqx.material-purple.css" type="text/css" /> -->
+    <!-- <link rel="stylesheet" href="jqwidgets-ver14.0.0/jqwidgets/styles/jqx.light.css" type="text/css" /> -->
+
+    <link rel="stylesheet" href="jQWidgets/EnhanceDataGrid.css" type="text/css" />
+
+    <style>
+      body {
+        padding: 10px;
+      }
+
+      .grid-container {
+        width: 100%;
+        height: 300px;
+        margin-bottom: 10px;
+      }
+
+      #grid {
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="grid-container">
+      <div id="grid"></div>
+    </div>
+
+    <div class="grid-container">
+      <div id="grid2" class="float-end"></div>
+    </div>
+
+    <div class="grid-container">
+      <div id="grid3" class="float-start"></div>
+
+      <button id="button1" class="float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="fa-solid fa-house"></i>
+        Open Modal
+      </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- include JS after DOM -->
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.sort.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.pager.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.selection.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.edit.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.filter.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.aggregates.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.export.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdata.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdata.export.js"></script>
+
+    <script src="https://kit.fontawesome.com/c550a6181f.js" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="bootstrap-5.2.3/js/bootstrap.bundle.js"></script>
+
+    <script type="text/javascript" src="jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
+
+    <script type="text/javascript" src="jQWidgets/EnhanceDataGrid.js"></script>
+
+    <script type="text/javascript">
+      let grid, gridnew;
+
+      $(function() {
+        // new syntax
+        /*/
+        const button = new jqxButton("button", { width: '120px', height: '35px', theme: 'material' });
+        /*/
+        const button = new jqxButton("#button1", { width: '120px', height: '35px', theme: 'material' });
+        //*/
+
+        // prepare the data
+        var data = new Array();
+        var firstNames = [
+          "Andrew", "Nancy", "Shelley", "Regina", "Yoshi", "Antoni", "Mayumi", "Ian", "Peter", "Lars", "Petra", "Martin", "Sven", "Elio", "Beate", "Cheryl", "Michael", "Guylene"
+        ];
+        var lastNames = [
+          "Fuller", "Davolio", "Burke", "Murphy", "Nagase", "Saavedra", "Ohno", "Devling", "Wilson", "Peterson", "Winkler", "Bein", "Petersen", "Rossi", "Vileid", "Saylor", "Bjorn", "Nodier"
+        ];
+        var productNames = [
+          "Black Tea", "Green Tea", "Caffe Espresso", "Doubleshot Espresso", "Caffe Latte", "White Chocolate Mocha", "Cramel Latte", "Caffe Americano", "Cappuccino", "Espresso Truffle", "Espresso con Panna", "Peppermint Mocha Twist"
+        ];
+        var priceValues = [
+          "2.25", "1.5", "3.0", "3.3", "4.5", "3.6", "3.8", "2.5", "5.0", "1.75", "3.25", "4.0"
+        ];
+
+        for (var i = 0; i < 200; i++) {
+          var row = {};
+          var productindex = Math.floor(Math.random() * productNames.length);
+          var price = parseFloat(priceValues[productindex]);
+          var quantity = 1 + Math.round(Math.random() * 10);
+
+          row["id"] = i + 1;
+          row["selected"] = i < 10 ? 1 : 0;
+          row["firstname"] = firstNames[Math.floor(Math.random() * firstNames.length)];
+          row["lastname"] = lastNames[Math.floor(Math.random() * lastNames.length)];
+          row["productname"] = productNames[productindex];
+          row["price"] = price;
+          row["quantity"] = quantity;
+          row["total"] = price * quantity;
+          data[i] = row;
+        }
+
+        var source = {
+          localdata: data,
+          datatype: "array",
+          datafields: [
+            { name: 'id', type: 'number' },
+            { name: 'selected', type: 'number' },
+            { name: 'firstname', type: 'string' },
+            { name: 'lastname', type: 'string' },
+            { name: 'productname', type: 'string' },
+            { name: 'quantity', type: 'number' },
+            { name: 'price', type: 'number' },
+            { name: 'total', type: 'number' }
+          ]
+        };
+        // var dataAdapter = new $.jqx.dataAdapter(source);
+        var columns = [
+          { text: 'Name', datafield: 'firstname', width: 120, editable: false },
+          { text: 'Last Name', datafield: 'lastname', width: 120, editable: false },
+          { text: 'Product', datafield: 'productname', width: 180, editable: false },
+          { text: 'Quantity', datafield: 'quantity', width: 80, align: 'right', cellsalign: 'right', editable: false },
+          { text: 'Unit Price', datafield: 'price', width: 90, cellsalign: 'right', cellsformat: 'c2', editable: false },
+          { text: 'Total', datafield: 'total', minWidth: 90, cellsalign: 'right', cellsformat: 'c2', editable: false },
+          { text: 'Check', datafield: 'selected', width: 50, columntype: 'checkbox' },
+        ];
+
+        /* ========== ========== ========== */
+        // test 1 - old syntax
+        console.log('%c >> test 1', 'color: red; font-size: 14px; font-weight: bold;');
+        grid = new EnhanceDataGrid({
+          id: '#grid',
+          searchBar: true,
+          editable: true,
+          // Deep copy array
+          // https://www.freecodecamp.org/news/how-to-clone-an-array-in-javascript-1d3183468f6a/
+          // Deep copy object
+          // https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
+          columns: JSON.parse(JSON.stringify(columns)),
+          // source: dataAdapter,
+          source: new $.jqx.dataAdapter(source),
+          tbElement: [
+            { button: 'reload' },
+            { button: 'add' },
+            { button: 'edit', win: 'win',
+              click: function(e, args) {
+                if (args) console.log(args);
+              }
+            },
+            { button: 'delete',
+              url: function (data, id) {
+                console.log(data);
+                console.log(`own functon post() post.php?mod=delete&id=${id}`);
+              },
+            },
+            { button: 'separator' },
+
+            // { button: 'find' },
+            // { button: 'view' },
+            // { button: 'save' },
+            { button: 'print' },
+            { button: 'excel' },
+            { button: 'csv' },
+            // { button: 'active' },
+            // { button: 'inactive' },
+            { button: 'custombutton', icon: 'fa-solid fa-star', iconColor: 'springgreen' },
+
+            { button: 'divider' },
+            { button: 'custombutton', text: 'Custom' },
+          ]
+        });
+        console.log(grid);
+
+        /* ========== ========== ========== */
+        // test 2 - error declare
+        //*/
+        console.log('%c >> test 2', 'color: red; font-size: 14px; font-weight: bold;');
+        const grid2 = new EnhanceDataGrid({
+          columns: JSON.parse(JSON.stringify(columns)),
+          // source: dataAdapter,
+          source: new $.jqx.dataAdapter(source),
+        });
+        console.log(grid2);
+        //*/
+
+        /* ========== ========== ========== */
+        // test 3 - custom width & height
+        //*/
+        console.log('%c >> test 3', 'color: red; font-size: 14px; font-weight: bold;');
+        const grid5 = new EnhanceDataGrid({
+          id: '#grid2',
+          width: '60%',
+          height: 300,
+          useBootstrap: true,
+          showfilterrow: true,
+          columns: JSON.parse(JSON.stringify(columns)),
+          // source: dataAdapter,
+          source: new $.jqx.dataAdapter(source),
+          tbElement: [
+            { button: 'reload' },
+            { button: 'add', text: 'Modal' },
+            { button: 'edit', text: 'Modal' },
+            { button: 'delete', text: 'Modal',
+              url: 'post.php?mod=delete',
+              param: function() { return { p1: 1, p2: 2 }; }, // dynamic parameters
+              // param: { p1: 1, p2: 2 }, // static parameters
+            },
+            { button: 'divider' },
+            { button: 'add', form: 'form', text: 'Modal+Form' },
+            { button: 'edit', form: 'form', text: 'Modal+Form' },
+          ]
+        });
+        console.log(grid5);
+        //*/
+
+        /* ========== ========== ========== */
+        // test 4 - missing DOM
+        //*/
+        console.log('%c >> test 4', 'color: red; font-size: 14px; font-weight: bold;');
+        const grid4 = new EnhanceDataGrid({
+          id: '#grid_3',
+          columns: JSON.parse(JSON.stringify(columns)),
+        });
+        console.log(grid4);
+        //*/
+
+        /* ========== ========== ========== */
+        // test 5 - new syntax
+        //*/
+        console.log('%c >> test 5', 'color: red; font-size: 14px; font-weight: bold;');
+        gridnew = new EnhanceDataGrid('#grid3', {
+          width: '80%',
+          useBootstrap: true,
+          centeredColumns: true,
+          searchBar: true,
+          showFilterButton: false,
+          showAdvFilterButton: false,
+          rowIndexWidth: 60,
+          columns: JSON.parse(JSON.stringify(columns)),
+          // source: dataAdapter,
+          source: new $.jqx.dataAdapter(source),
+          // TODO: need testing for new syntax
+          tbElement: [
+            { button: 'reload' },
+            { button: 'custom',
+              buttonNode: $('<i class="text-danger">New Syntax</i>')
+            }
+          ]
+        });
+        console.log(gridnew);
+        //*/
+
+        // grid3.exposeFunction();
+      });
+    </script>
+  </body>
+
+</html>
