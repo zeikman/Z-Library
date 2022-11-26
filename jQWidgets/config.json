@@ -10,7 +10,11 @@
     "include": [
       "EnhanceDataGrid.js"
     ],
-    "exclude": [],
+    "exclude": [
+      "sample",
+      "out",
+      "backup.js"
+    ],
     "includePattern": ".+\\.js(doc)?$",
     "excludePattern": "(^|\\/|\\\\)_"
   },
@@ -21,8 +25,5 @@
   },
   "opts": {
     "destination": "./documentation/"
-  },
-  "tutorial_libNotification": {
-    "title": "Tutorial - libNotification.js"
   }
 }

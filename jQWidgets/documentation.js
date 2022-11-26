@@ -10,7 +10,7 @@
  *
  * @license
  * <p style="margin: 0; text-align: justify;">
- * Copyright (c) 2016-2021 Tan Yong Xiang
+ * Copyright (c) 2022 Tan Yong Xiang
  * <br><br>
  *
  * <b>MIT License</b>

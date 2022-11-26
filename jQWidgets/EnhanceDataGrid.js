@@ -1,109 +1,4 @@
-/*
- * Enhance Idea
- *
- * - use Class declasrations
- * - inherit all jqxGrid() props by default
- */
-
-/**
- * An enhanced version of jqxGrid with various useful built-in functionalities.
- * @version 1.0.0
- *
- * @param {*}               prop.jqxGridProperties                              - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}
- * @param {Object}          prop                                                - EnhanceDataGrid object properties
- * @param {String}          prop.id                                             - Grid ID
- * @param {String}          prop.dataSource=''                                  - Grid data source, needed when dataAdapter is not provided, sets [dataSource]{@link EnhanceDataGrid#dataSource}
- * @param {Object}          [prop.dataAdapter]                                  - Grid data adapter, needed when dataSource is not provided, sets [dataAdapter]{@link EnhanceDataGrid#dataAdapter}
- * @param {Boolean}         [prop.searchBar=false]                              - Show search bar, sets [searchBar]{@link EnhanceDataGrid#searchBar}
- * @param {String}          [prop.checkedDatafield='selected']                  - Column name that use to get all selected row ID, sets [checkedDatafield]{@link EnhanceDataGrid#checkedDatafield}
- * @param {Boolean}         [prop.rowIndexWidth=50]                             - Row index width, sets [rowIndexWidth]{@link EnhanceDataGrid#rowIndexWidth}
- * @param {Boolean}         [prop.showRowIndex=true]                            - Show row index, sets [showRowIndex]{@link EnhanceDataGrid#showRowIndex}
- * @param {Boolean}         [prop.showAdvFilterButton=true]                     - Show 'Advanced Filter' button, sets [showAdvFilterButton]{@link EnhanceDataGrid#showAdvFilterButton}
- * @param {Boolean}         [prop.autoSearch=false]                             - If set to true, grid will perform auto searching after 500 miliseconds when user key in, sets [autoSearch]{@link EnhanceDataGrid#autoSearch}
- * @param {Boolean}         [prop.enterSearch=false]                            - If set to true, grid will perform searching when 'Enter' key pressed, sets [enterSearch]{@link EnhanceDataGrid#enterSearch}
- * @param {Boolean}         [prop.enterFilter=true]                             - If set to true, grid will perform filtering when 'Enter' key pressed, sets [enterFilter]{@link EnhanceDataGrid#enterFilter}
- * @param {Boolean}         [prop.showFindButton=false]                         - Show 'Find' button, sets [showFindButton]{@link EnhanceDataGrid#showFindButton}
- * @param {Boolean}         [prop.showFilterButton=true]                        - Show 'Filter' button, sets [showFilterButton]{@link EnhanceDataGrid#showFilterButton}
- * @param {Boolean}         [prop.statusBar=false]                              - Show status bar, sets [statusBar]{@link EnhanceDataGrid#statusBar}
- * @param {Object[]}        [prop.tbElement=[]]                                 - Grid toolbar element, sets [tbElement]{@link EnhanceDataGrid#tbElement}
- * @param {Object}          prop.tbElement.<_Properties>                        - Built-in elements
- * @param {String}          [prop.tbElement.<_Properties>.button]               - Available button: 'reload', 'add', 'edit', 'delete', 'print', 'excel', 'custom', 'custombutton'<br>Extra element: 'divider', 'separator'
- * @param {String}          [prop.tbElement.<_Properties>.text]                 - Button text, applicable to all buttons
- * @param {String}          [prop.tbElement.<_Properties>.icon]                 - Button icon (fontAwesome icon), applicable to all buttons, 'none' to hide icon
- * @param {String}          [prop.tbElement.<_Properties>.iconColor]            - Button icon color (fontAwesome icon), applicable to all buttons
- * @param {Boolean|Number}  [prop.tbElement.<_Properties>.visible]              - If set to true or 1, element will be visible, applicable to all buttons
- * @param {Boolean|Number}  [prop.tbElement.<_Properties>.admin]                - If set to true or 1, admin button presentation, applicable to all buttons
- * @param {Function}        [prop.tbElement.<_Properties>.click]                - Button $.click() function, applicable to all buttons
- * @param {Function}        [prop.tbElement.<_Properties>.beforeClick]          - Callback before $.click() implement, applicable to all buttons
- * @param {Function}        [prop.tbElement.<_Properties>.afterClick]           - Callback after $.click() implemented, applicable to all buttons
- * @param {Function}        [prop.tbElement.<_Properties>.check]                - Checking function before edit/delete record, only applicable for 'edit', 'delete' button
- * @param {String}          [prop.tbElement.<_Properties>.win]                  - jqxWindow ID, only applicable for 'add', 'edit' buttons
- * @param {String}          [prop.tbElement.<_Properties>.form]                 - form ID, only applicable for 'add', 'edit' buttons
- * @param {Boolean}         [prop.tbElement.<_Properties>.winOpenOnButton=true] - If set to false, jqxWindow will not open with attached to the button, only applicable for 'add', 'edit' buttons
- * @param {Boolean}         [prop.tbElement.<_Properties>.autoOpenWindow=true]  - If set to false, jqxWindow will open automatically when button clicked, only applicable for 'add', 'edit' buttons
- * @param {Number}          [prop.tbElement.<_Properties>.verticalAlign]        - Set jqxWindow top margin, only applicable for 'add', 'edit' buttons
- * @param {String|Function} [prop.tbElement.<_Properties>.url]                  - For 'delete' button: Delete action location<br> For 'print' button: Form file location
- * @param {String}          [prop.tbElement.<_Properties>.filename]             - For 'print' button: Form filename<br> For 'excel' button: Excel filename
- * @param {Boolean}         [prop.tbElement.<_Properties>.debug=false]          - If set to true, debug message will prompt out if delete action failed, only applicable for 'delete' button
- * @param {Function}        [prop.tbElement.<_Properties>.success]              - Callback Function if delete action successed, only applicable for 'delete' button
- * @param {Function}        [prop.tbElement.<_Properties>.fail]                 - Callback function if delete action failed, only applicable for 'delete' button
- * @param {Function}        [prop.tbElement.<_Properties>.param]                - Function to passing dynamic value argument into print action location, only applicable for 'print' button
- * @param {String}          [prop.tbElement.<_Properties>.keyword]              - Only applicable and required for 'printAll' button
- * @param {String}          [prop.tbElement.<_Properties>.column]               - Only applicable and required for 'printAll' button
- * @param {String}          [prop.tbElement.<_Properties>.columnprefix]         - Only applicable and required for 'printAll' button
- * @param {*}               [prop.tbElement.<_Properties>.buttonNode]           - Custom button syntax, only applicable for 'custom' button
- */
-
-/*
- * --- Getter
- * Getter grid.jqxGrid;
- *
- *  --- Method
- * grid.getCheckedItems()
- * grid.getDirty()
- * grid.getAllDirty()
- * grid.updateBoundData()
- * grid.clearSelection()
- * grid.refresh()
- * grid.updateSrcUrl()
- * grid.getSrcUrl()
- * grid.updateCellValue()
- * grid.getCellValue()
- * grid.updateSelectedCellValue()
- * grid.getSelectedCellValue()
- * grid.updateCellValueById()
- * grid.getCellValueById()
- * grid.getRowData()
- * grid.getSelectedRowData()
- * grid.getSelectedRowIndex()
- * grid.getSelectedRowIndexes()
- * grid.getRows()
- * grid.setProperty()
- * grid.getRowId()
- * grid.hideColumn()
- * grid.showColumn()
- * grid.on()
- */
 class EnhanceDataGrid {
-  /* ====================================================================================
-   * static functions
-   *
-   * https://stackoverflow.com/questions/28627908/call-static-methods-from-regular-es6-class-methods
-   * ====================================================================================
-   */
-
-  /**
-   * Return true if null
-   * @static
-   * @param {*}       input             - Input to check whether is equal to null
-   * @param {Boolean} [identical=false] - Whether to check identically equal or not
-   * @returns {Boolean} True if null
-   * @example
-   * // true
-   * EnhanceDataGrid.isNull(null);
-   * // false
-   * EnhanceDataGrid.isNull('not null');
-   */
   static isNull(input, identical) {
     if (typeof identical === 'boolean' && identical) { return input === null; }
     else {
@@ -113,18 +8,6 @@ class EnhanceDataGrid {
     }
   } // end of isNull
 
-  /**
-   * Return true if undefined
-   * @static
-   * @param {*}       input             - Input to check whether is equal to undefined
-   * @param {Boolean} [identical=false] - Whether to check identically equal or not
-   * @returns {Boolean} True if undefined
-   * @example
-   * // true
-   * EnhanceDataGrid.isUndefined(undefined);
-   * // false
-   * EnhanceDataGrid.isUndefined('not undefined');
-   */
   static isUndefined(input, identical) {
     if (typeof identical === 'boolean' && identical) { return input === undefined; }
     else {
@@ -134,46 +17,14 @@ class EnhanceDataGrid {
     }
   } // end of isUndefined
 
-  /**
-   * Return true if empty string
-   * @static
-   * @param {*} input - Input to check whether is identically equal to emptryy string
-   * @returns {Boolean} True if empty string
-   * @example
-   * // true
-   * EnhanceDataGrid.isEmptyString('');
-   * // false
-   * EnhanceDataGrid.isEmptyString('not empty string');
-   */
   static isEmptyString(input) { return input === ''; } // end of isEmptyString
 
-  /**
-   * Return true if input is unset
-   * @static
-   * @param {*}       input         - Input to check whether is unset
-   * @param {Boolean} [trim=false]  - Whether to trim input or not
-   * @example
-   * // true
-   * EnhanceDataGrid.isUnset('');
-   * EnhanceDataGrid.isUnset(null);
-   * EnhanceDataGrid.isUnset(undefined);
-   * // false
-   * EnhanceDataGrid.isUnset('set');
-   * EnhanceDataGrid.isUnset(1);
-   */
   static isUnset(input, trim) {
     if (typeof trim === 'boolean' && trim && typeof input === 'string') { input = input.trim(); }
     if (EnhanceDataGrid.isNull(input) || EnhanceDataGrid.isUndefined(input) || EnhanceDataGrid.isEmptyString(input)) { return true; }
     return false;
   } // end of isUnset
 
-  /**
-   * Transform query string to Array
-   * @static
-   * @param {String} prmstr - parameter string
-   * @example
-   * EnhanceDataGrid.queryStringToObject('param1=a&param2=b')
-   */
   static queryStringToObject(prmstr) {
     const params = {};
     const prmArr = prmstr.split('&');
@@ -187,13 +38,6 @@ class EnhanceDataGrid {
     return params;
   }
 
-  /**
-   * Convert object into query string
-   * @static
-   * @param {Object} qsObj - Query string object
-   * @example
-   * EnhanceDataGrid.objectToQueryString({ param1: 'a', param2: 'b' });
-   */
   static objectToQueryString(qsObj) {
     let qsString = '';
 
@@ -202,16 +46,6 @@ class EnhanceDataGrid {
     return qsString.substring(0, qsString.length - 1);
   }
 
-  /**
-   * Get query string
-   * @static
-   * @param {String} [url] - Uniform Resource Locator which the query string will be extracted. If URL not provided, current browser URL will be used instead
-   * @example
-   * // get query string of browser
-   * EnhanceDataGrid.getSearchParameters();
-   * // get query string of provided URL
-   * EnhanceDataGrid.getSearchParameters('url.php?param1=a&param2=b');
-   */
   static getSearchParameters(url) {
     const prmstr = (typeof url === 'string' && url)
       ? url.split('?')[1]
@@ -220,14 +54,6 @@ class EnhanceDataGrid {
     return prmstr !== null && prmstr !== '' ? EnhanceDataGrid.queryStringToObject(prmstr) : {};
   }
 
-  /**
-   * Append query string
-   * @static
-   * @param {String} url    - Uniform Resource Locator
-   * @param {Object} params - query string in object form, { key:value } pair
-   * @example
-   * EnhanceDataGrid.insertQueryString('url.php', { param1: 'a', param2: 'b' });
-   */
   static insertQueryString(url, params) {
     if (url.indexOf('?') > -1) {
       const qs = EnhanceDataGrid.getSearchParameters(url);
@@ -240,16 +66,6 @@ class EnhanceDataGrid {
     return url + '?' + EnhanceDataGrid.objectToQueryString(params);
   }
 
-  /**
-   * Debounce function
-   * @static
-   * @param {Function}  fn    - callback function
-   * @param {Number}    delay - delay timing
-   * @see [Reference]{@link https://remysharp.com/2010/07/21/throttling-function-calls}
-   * @example
-   * const debounceFunction = EnhanceDataGrid.debounce(() => console.log('hello world'), 1000);
-   * debounceFunction();
-   */
   static debounce(fn, delay) {
     let timer = null;
 
@@ -263,26 +79,11 @@ class EnhanceDataGrid {
     };
   }
 
-  /**
-   * Check whether is a valid keyboard input
-   * @static
-   * @param {Object} keyDownEvent - Key event object
-   * @returns {Boolean} True if valid
-   * @example
-   * // true
-   * EnhanceDataGrid.isValidKeyboardInput(<keyDownEvent>('A' => 65));
-   * // false
-   * EnhanceDataGrid.isValidKeyboardInput(<keyDownEvent>('Enter' => 13));
-   */
-  // - http://davidwalsh.name/dijit-intermediatechanges
-  // - https://dojotoolkit.org/reference-guide/1.10/dojo/keys.html
   static isValidKeyboardInput(keyDownEvent) {
     var keys = {
-      /*
-       * summary:
-       *    Definitions for common key values.
-       *    Client code should test keyCode against these named constants, as the actual codes can vary by browser.
-       */
+      // summary:
+      //   Definitions for common key values.
+      //   Client code should test keyCode against these named constants, as the actual codes can vary by browser.
       BACKSPACE : 8,
       TAB       : 9,
       CLEAR     : 12,
@@ -351,7 +152,7 @@ class EnhanceDataGrid {
     };
 
     switch (keyDownEvent.keyCode) {
-      /*case keys.BACKSPACE:*/
+      // case keys.BACKSPACE:
       case keys.TAB:
       case keys.CLEAR:
       case keys.ENTER:
@@ -362,7 +163,7 @@ class EnhanceDataGrid {
       case keys.PAUSE:
       case keys.CAPS_LOCK:
       case keys.ESCAPE:
-      /*case keys.SPACE:*/
+      // case keys.SPACE:
       case keys.PAGE_UP:
       case keys.PAGE_DOWN:
       case keys.END:
@@ -377,8 +178,8 @@ class EnhanceDataGrid {
       case keys.LEFT_WINDOW:
       case keys.RIGHT_WINDOW:
       case keys.SELECT:
-      /*case keys.NUMPAD_0: case keys.NUMPAD_1: case keys.NUMPAD_2: case keys.NUMPAD_3: case keys.NUMPAD_4:
-      case keys.NUMPAD_5: case keys.NUMPAD_6: case keys.NUMPAD_7: case keys.NUMPAD_8: case keys.NUMPAD_9:*/
+      // case keys.NUMPAD_0: case keys.NUMPAD_1: case keys.NUMPAD_2: case keys.NUMPAD_3: case keys.NUMPAD_4:
+      // case keys.NUMPAD_5: case keys.NUMPAD_6: case keys.NUMPAD_7: case keys.NUMPAD_8: case keys.NUMPAD_9:
       case keys.NUMPAD_MULTIPLY:
       case keys.NUMPAD_PLUS:
       case keys.NUMPAD_ENTER:
@@ -395,36 +196,12 @@ class EnhanceDataGrid {
     }
   }
 
-  /* ====================================================================================
-   * private properties
-   * ====================================================================================
-   */
   #_syntax;
 
-  /**
-   * Grid object
-   * @type {Object}
-   * @private
-   */
   #_grid;
 
-  /**
-   * Grid ID
-   * @type {String}
-   * @private
-   * @example
-   * // casual syntax
-   * new EnhanceDataGrid({ id: '#grid_id' });
-   * // new syntax
-   * new EnhanceDataGrid('#grid_id' { props });
-   */
   #_id;
 
-  /**
-   * EnhanceDataGrid property listing
-   * @type {Array}
-   * @private
-   */
   #_zproplist = [
     'autoSearch',
     'bootstrap',
@@ -446,18 +223,8 @@ class EnhanceDataGrid {
     'useBootstrap',
   ];
 
-  /**
-   * EnhanceDataGrid properties
-   * @type {Object}
-   * @private
-   */
   #_zprops = {};
 
-  /**
-   * EnhanceDataGrid default properties
-   * @type {Object}
-   * @private
-   */
   #_props = {
     // same with jqxGrid properties
     theme             : '',
@@ -491,83 +258,18 @@ class EnhanceDataGrid {
     showAdvFilterButton : true,
   };
 
-  /**
-   * Dirty flag (only applicable for 'selected' datafield)
-   * @type {Object}
-   * @private
-   */
   #_dirty = {};
 
-  /**
-   * All dirty flags
-   * @type {Object}
-   * @private
-   */
   #_allDirty = {};
 
-  /**
-   * Get selected row ID specified by 'checkedDatafield' property, default: 'selected'
-   * @type {Array}
-   * @private
-   */
   #_checkedItems = [];
 
-  /**
-   * Grid data source
-   * @type {String}
-   * @private
-   */
   #_dataSource;
 
-  /**
-   * Grid data adapter<br />
-   * NOTE: If dataAdapter is specified, dataSource will be ignore
-   * @type {Object}
-   * @private
-   */
   #_dataAdapter;
 
-  /**
-   * Flag controlling clear selection
-   * @private
-   */
   #_clearSelection = false;
 
-  /* ====================================================================================
-   * private methods
-   * ====================================================================================
-   */
-
-  constructor() {
-    let args    = arguments[0];
-    let args_1  = arguments[1];
-    let syntax  = 'old';
-
-    if (typeof args === 'object') {
-      if (!args.id) return console.error("[EnhanceDataGrid] Error: No define 'id' !");
-      if (!args.columns) { return console.error("[EnhanceDataGrid] Error: No define 'columns' !"); }
-
-      this.#_id = args.id;
-      delete args.id;
-    }
-
-    // new syntax
-    if (typeof args === 'string' && typeof args_1 === 'object') {
-      syntax = 'new';
-
-      this.#_id = args;
-      args = args_1;
-    }
-
-    this.#_props = { ...this.#_props, ...args };
-
-    this.#_initJqxgrid(syntax);
-  } // end of constructor
-
-  /**
-   * jquery confirm alert default to centered zomm in/out
-   * @rivate
-   */
   #_alert(opt) {
     $.alert({
       ...{
@@ -581,10 +283,6 @@ class EnhanceDataGrid {
     });
   }
 
-  /**
-   * Draw jqxGrid
-   * @private
-   */
   #_initJqxgrid(syntax) {
     this.#_syntax = syntax;
 
@@ -634,10 +332,6 @@ class EnhanceDataGrid {
     }
   } // end of #_initJqxgrid
 
-  /**
-   * Dirty flag feature function [only for single column checkbox]
-   * @private
-   */
   #_initDirtyFlagEvent() {
     const self = this;
 
@@ -678,19 +372,11 @@ class EnhanceDataGrid {
     });
   } // end of #_initDirtyFlagEvent
 
-  /**
-   * Clear dirty flags
-   * @private
-   */
   #_clearDirtyFlag() {
-      this.#_dirty    = {};
-      this.#_allDirty = {};
-    };
+    this.#_dirty    = {};
+    this.#_allDirty = {};
+  };
 
-  /**
-   * Extract EnhanceDataGrid properties out of jqxGrid properties to prevent jqxGrid init error
-   * @private
-   */
   #_extractZProps() {
     const object = this.#_props;
 
@@ -704,10 +390,6 @@ class EnhanceDataGrid {
     }
   } // end of #_extractZProps
 
-  /**
-   * Manipulate columns
-   * @private
-   */
   #_processColumns() {
     if (this.#_zprops.centeredColumns === true) {
       this.#_props.columns.forEach(c => {
@@ -719,10 +401,6 @@ class EnhanceDataGrid {
     this.#_displayRowIndex();
   } // end of #_processColumns
 
-  /**
-   * Display row number
-   * @private
-   */
   #_displayRowIndex() {
     if (this.#_zprops.showRowIndex) {
       this.#_props.columns.unshift({
@@ -764,10 +442,6 @@ class EnhanceDataGrid {
     }
   } // end of #_displayRowIndex
 
-  /**
-   * Render toolbar
-   * @private
-   */
   #_renderToolbar() {
     const self = this;
     const gridId = this.#_id;
@@ -842,7 +516,7 @@ class EnhanceDataGrid {
           searchInput
             .keydown(event => {
               if (event.which === 13) { // NOTE: Enter keyCode
-                self.#_filterData($(event.target)/* , clearInput */);
+                self.#_filterData($(event.target));
               }
 
               if (event.which === 27) { // NOTE: ESC keyCode
@@ -857,7 +531,7 @@ class EnhanceDataGrid {
 
           // $('<i>').addClass('fas fa-search').css({ color: '#d63979' }).appendTo(findButton);
 
-          // /*$('<span>').css({ marginLeft: 5 }).text('Find').appendTo(findButton);*/ // CHANGE: hide find text
+          // // $('<span>').css({ marginLeft: 5 }).text('Find').appendTo(findButton); // CHANGE: hide find text
           // findButton
           //   .jqxButton({ theme: this.theme, width: 25, height: 25 })
           //   .on('click', event => {
@@ -886,7 +560,7 @@ class EnhanceDataGrid {
             .addClass('fa-solid fa-fw fa-filter')
             .appendTo(filterButton);
 
-          /*$('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(filterButton);*/ // CHANGE: hide filter text
+          // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(filterButton); // CHANGE: hide filter text
           filterButton
             .jqxButton(buttonCSS)
             .on('click', event => {
@@ -997,15 +671,11 @@ class EnhanceDataGrid {
       }
 
       // NOTE: Append toolbar element
-      self.#_appendToolbarElement(container, /* self.dataAdapter, self.columns, tbElement */);
+      self.#_appendToolbarElement(container);
     };
   } // end of #_renderToolbar
 
-  /**
-   * Generate toolbar
-   * @private
-   */
-  #_appendToolbarElement(container, /* dataAdapter, cols, tbElement */) {
+  #_appendToolbarElement(container) {
     const self = this;
     const props = this.#_props;
     const zProps = this.#_zprops;
@@ -1465,7 +1135,7 @@ class EnhanceDataGrid {
             disabled  : typeof tbElement[i].disabled === 'boolean' ? tbElement[i].disabled : false,
             icon      : tbElement[i].icon ? tbElement[i].icon : buttonDefault[btn].icon,
             iconColor : tbElement[i].iconColor ? tbElement[i].iconColor : buttonDefault[btn].iconColor,
-            text      : (tbElement[i].text || tbElement[i].text === '') ? tbElement[i].text : ''/* buttonDefault[btn].text */,
+            text      : (tbElement[i].text || tbElement[i].text === '') ? tbElement[i].text : '', // buttonDefault[btn].text,
             title     : (tbElement[i].title || tbElement[i].title === '') ? tbElement[i].title : buttonDefault[btn].title,
           });
 
@@ -1537,11 +1207,6 @@ class EnhanceDataGrid {
     return iconButton;
   } // end of #_generateButtonSyntax
 
-  /**
-   * Draw toolbar button
-   * @private
-   * @param {Object} opt
-   */
   #_initGridButton(opt) {
     const container     = opt.container;
     const button        = opt.btn;
@@ -1560,7 +1225,7 @@ class EnhanceDataGrid {
           // theme: 'material-purple',
           theme: this.#_zprops.buttonTheme,
           // width: btnWidth,
-          height: 25/* btnHeight */,
+          height: 25, // btnHeight,
           disabled: typeof disabled === 'boolean' ? disabled : false
         });
 
@@ -1574,7 +1239,7 @@ class EnhanceDataGrid {
           // theme: 'material-purple',
           theme: this.#_zprops.buttonTheme,
           // width: btnWidth,
-          height: 25/* btnHeight */,
+          height: 25, // btnHeight,
           disabled: typeof disabled === 'boolean' ? disabled : false
         });
 
@@ -1587,7 +1252,7 @@ class EnhanceDataGrid {
           // theme: 'material-purple',
           theme: this.#_zprops.buttonTheme,
           // width: btnWidth,
-          height: 25/* btnHeight */,
+          height: 25, // btnHeight,
           disabled: typeof disabled === 'boolean' ? disabled : false
         });
 
@@ -1610,13 +1275,6 @@ class EnhanceDataGrid {
     return buttonElement;
   } // end of #_initGridButton
 
-  /**
-   * Get button properties
-   * @private
-   * @param {Object} json
-   * @param {String} key
-   * @param {String} type
-   */
   #_getGridButtonProps = (json, key, type) => {
     // console.log(json)
     // console.log(key)
@@ -1666,12 +1324,6 @@ class EnhanceDataGrid {
     return obj;
   }
 
-  /**
-   * Filter grid data
-   * @private
-   * @param {Object}  searchInput
-   * @param {Boolean} clearInput
-   */
   #_filterData(searchInput, clearInput=false) {
     // NOTE: Filter search
     const gridId = this.#_id;
@@ -1693,12 +1345,12 @@ class EnhanceDataGrid {
         // filtergroup.addfilter(filter_or_operator, filterNumeric);
 
         // NOTE: date filter
-        /* if (columnCellFormat === constant.app.dateFormat) {
-          filtervalue = Date.parse(filtervalue);
+        // if (columnCellFormat === constant.app.dateFormat) {
+        //   filtervalue = Date.parse(filtervalue);
 
-          var filterDate = filtergroup.createfilter('datefilter', filtervalue, 'EQUAL');
-          filtergroup.addfilter(filter_or_operator, filterDate);
-        } */
+        //   var filterDate = filtergroup.createfilter('datefilter', filtervalue, 'EQUAL');
+        //   filtergroup.addfilter(filter_or_operator, filterDate);
+        // }
 
         $(gridId).jqxGrid('addfilter', sortColumn, filtergroup);
         $(gridId).jqxGrid('applyfilters');
@@ -1716,26 +1368,37 @@ class EnhanceDataGrid {
     }
   } // end of #_filterData
 
-  /* ====================================================================================
-   * public methods
-   * ====================================================================================
-   */
+  constructor() {
+    let args    = arguments[0];
+    let args_1  = arguments[1];
+    let syntax  = 'old';
 
-  // exposeFunction() {
-  //   // console.log('call exposeFunction()');
-  // } // end of exposeFunction
+    if (typeof args === 'object') {
+      if (!args.id) return console.error("[EnhanceDataGrid] Error: No define 'id' !");
+      if (!args.columns) { return console.error("[EnhanceDataGrid] Error: No define 'columns' !"); }
+
+      this.#_id = args.id;
+      delete args.id;
+    }
+
+    // new syntax
+    if (typeof args === 'string' && typeof args_1 === 'object') {
+      syntax = 'new';
+
+      this.#_id = args;
+      args = args_1;
+    }
+
+    this.#_props = { ...this.#_props, ...args };
+
+    this.#_initJqxgrid(syntax);
+  } // end of constructor
 
   get jqxGrid() {
     // return $(this.id);
     return this.#_grid;
   }
 
-  /**
-   * Clear grid selected selection
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.clearSelection();
-   */
   clearSelection() {
     // 'none'                  - disables the selection
     // 'singlerow'             - full row selection
@@ -1782,26 +1445,10 @@ class EnhanceDataGrid {
     }
   } // end of clearSelection
 
-  /**
-   * Get all dirty values classified by {id} columnfield
-   * @returns {Object} Object that contains all dirty values
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getAllDirty();
-   */
   getAllDirty() {
     return this.#_allDirty;
   } // end of getAllDirty
 
-  /**
-   * Get cell value specified by row index with column name
-   * @param {(String|Number)} rowindex  - Row index
-   * @param {String}          column    - Column name
-   * @returns {*} Cell value specified by rowindex
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getCellValue(0, 'column_name');
-   */
   getCellValue(rowindex, column) {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getcellvalue', rowindex, column);
@@ -1810,50 +1457,14 @@ class EnhanceDataGrid {
       return this.jqxGrid.getcellvalue(rowindex, column);
   } // end of getCellValue
 
-  /**
-   * Get cell value specified by row ID with column name
-   * @param {(String|Number)} rowid   - Row ID
-   * @param {String}          column  - Column name
-   * @returns {*} Cell value specified by row ID
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getCellValueById('row_id', 'column_name');
-   */
-  // getCellValueById(rowid, column) {
-  //   return this.jqxGrid.jqxGrid('getcellvaluebyid', rowid, column);
-  // } // end of getCellValueById
-
-  /**
-   * Get all checked data ID
-   * @default 'selected'
-   * @returns {Object} Object that contains all data ID that checked in {checkedDatafield} columnfield
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getCheckedItems();
-   */
   getCheckedItems() {
     return this.#_checkedItems;
   } // end of getCheckedItems
 
-  /**
-   * Get all dirty (value modified) data ID
-   * @returns {Object} Object that contains all dirty data ID in {checkedDatafield} columnfield
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getDirty();
-   */
   getDirty() {
     return this.#_dirty;
   } // end of getDirty
 
-  /**
-   * Get row data specified by row index
-   * @param {(String|Number)} rowindex - Row index
-   * @returns {Object} Data object specified by row index
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getRowData(0);
-   */
   getRowData(rowindex) {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getrowdata', rowindex);
@@ -1862,25 +1473,6 @@ class EnhanceDataGrid {
       return this.jqxGrid.getrowdata(rowindex);
   } // end of getRowData
 
-  /**
-   * Get row ID
-   * @param {(String|Number)} rowindex - Row index
-   * @returns {String} Row ID specified by rowindex
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getRowId(0);
-   */
-  // getRowId(rowindex) {
-  //   return this.jqxGrid.jqxGrid('getrowid', rowindex);
-  // } // end of getRowId
-
-  /**
-   * Get all rows
-   * @returns {Object[]} An array of all rows loaded in Grid. If Grid is filtered, the returned value is an array of the filtered records
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getRows();
-   */
   getRows() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getrows');
@@ -1889,14 +1481,6 @@ class EnhanceDataGrid {
       return this.jqxGrid.getrows();
   } // end of getRows
 
-  /**
-   * Get selected row cell value specified by column
-   * @param {String} column - Column name
-   * @return {*} Selected row cell value specified by column
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getSelectedCellValue('column_name');
-   */
   getSelectedCellValue(column) {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getcellvalue', this.getSelectedRowIndex(), column);
@@ -1905,13 +1489,6 @@ class EnhanceDataGrid {
       return this.jqxGrid.getcellvalue(this.getSelectedRowIndex(), column);
   } // end of getSelectedCellValue
 
-  /**
-   * Get selected row data object
-   * @returns {Object} Selected row data object
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getSelectedRowData();
-   */
   getSelectedRowData() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getrowdata', this.getSelectedRowIndex());
@@ -1920,13 +1497,6 @@ class EnhanceDataGrid {
       return this.jqxGrid.getrowdata(this.getSelectedRowIndex());
   } // end of getSelectedRowData
 
-  /**
-   * Get selected row index
-   * @returns {String} Selected row index
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getSelectedRowIndex();
-   */
   getSelectedRowIndex() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getselectedrowindex');
@@ -1935,13 +1505,6 @@ class EnhanceDataGrid {
       return this.jqxGrid.getselectedrowindex();
   } // end of getSelectedRowIndex
 
-  /**
-   * Get selected rows indexes
-   * @returns {Array} Array of selected rows index
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getSelectedRowIndexes();
-   */
   getSelectedRowIndexes() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getselectedrowindexes');
@@ -1950,13 +1513,6 @@ class EnhanceDataGrid {
       return this.jqxGrid.getselectedrowindexes();
   } // end of getSelectedRowIndexes
 
-  /**
-   * Get URL of data source
-   * @returns {String} URL of data source
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.getSrcUrl();
-   */
   getSourceUrl() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('source')._source.url;
@@ -1966,15 +1522,6 @@ class EnhanceDataGrid {
       return null;
   } // end of getSourceUrl
 
-  /**
-   * Hide grid column
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * // Single column
-   * grid.hideColumn('columnName');
-   * // Multiple columns
-   * grid.hideColumn(['columnName1', 'columnName2', ...]);
-   */
   hideColumn(columns) {
     const grid = this.jqxGrid;
 
@@ -2019,35 +1566,12 @@ class EnhanceDataGrid {
     return false;
   } // end of hideColumn
 
-  /*
-   * This callback is part of the [EnhanceDataGrid.on()]{@link EnhanceDataGrid#on} method
-   * @callback EnhanceDataGrid~evtCallback
-   * @param {Object} event - EventListener event object
-   */
-  /**
-  * Register grid event listener
-  * @param {String}                       event     - Event name, refer to [jqxGrid API]{@link https://goo.gl/sqcJnv}
-  * @param {EnhanceDataGrid~evtCallback}  callback  - Event callback function
-  * @example
-  * const grid = new EnhanceDataGrid();
-  * grid.on('rowselect', event => {
-  *   // code
-  * });
-  */
   on(event, callback) {
     this.jqxGrid.off(event);
     this.jqxGrid.on(event, callback);
   } // end of on
 
-  /**
-   * Refresh grid data
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.refresh();
-   */
   refresh() {
-    console.log(this.#_syntax);
-
     this.#_clearSelection = true;
 
     if (this.#_syntax === 'old')
@@ -2057,31 +1581,6 @@ class EnhanceDataGrid {
       this.jqxGrid.updatebounddata();
   } // end of refresh
 
-  /**
-   * Set jqxGrid property
-   * @param {Object} property - Object of grid property, refer to
-   * [jqxGrid API]{@link https://goo.gl/sqcJnv}
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.setProperty({
-   *   editable: true,
-   *   filterable: true,
-   *   ...
-   * });
-   */
-  // setProperty(props) {
-  //   this.jqxGrid.jqxGrid(props);
-  // } // end of setProperty
-
-  /**
-   * Show grid column
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * // Single column
-   * grid.showColumn('columnName');
-   * // Multiple columns
-   * grid.showColumn(['columnName1', 'columnName2', ...]);
-   */
   showColumn(columns) {
     const grid = this.jqxGrid;
 
@@ -2126,18 +1625,6 @@ class EnhanceDataGrid {
     return false;
   } // end of showColumn
 
-  /**
-   * Updates the bound data and refreshes the grid.
-   * You can pass 'filter' or 'sort' as parameter, if the update reason is change in 'filtering' or 'sorting'.
-   * To update only the data without the columns, use the 'data' parameter.
-   * To make a quick update of the cells, pass "cells" as parameter.
-   * Passing "cells" will refresh only the cells values when the new rows count is equal to the previous rows count.
-   * To make a full update, do not pass any parameter.
-   * @param {String} arg - 'filter' | 'sort' | 'data' | 'cells'
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.updateBoundData();
-   */
   updateBoundData(arg) {
     this.#_clearDirtyFlag();
 
@@ -2158,15 +1645,6 @@ class EnhanceDataGrid {
     }
   } // end of updateBoundData
 
-  /**
-   * Update cell value specified by row index with column name
-   * @param {(String|Number)} rowindex  - Row index
-   * @param {String}          column    - Column name
-   * @param {*}               value     - New cell value
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.updateCellValue(0, 'column_name', 'new_value');
-   */
   updateCellValue(rowindex, column, value) {
     if (this.#_syntax === 'old')
       this.jqxGrid.jqxGrid('setcellvalue', rowindex, column, value);
@@ -2175,27 +1653,6 @@ class EnhanceDataGrid {
       this.jqxGrid.setcellvalue(rowindex, column, value);
   } // end of updateCellValue
 
-  /**
-   * Update cell value specified by row ID with column name
-   * @param {(String|Number)} rowid   - Row ID
-   * @param {String}          column  - Column name
-   * @param {*}               value   - New cell value
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.updateCellValueById('row_id', 'column_name', 'new_value');
-   */
-  // updateCellValueById(rowid, column, value) {
-  //   this.jqxGrid.jqxGrid('setcellvaluebyid', rowid, column, value);
-  // } // end of updateCellValueById
-
-  /**
-   * Update selected row cell value
-   * @param {String}  column  - Column name
-   * @param {*}       value   - New cell value
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.updateSelectedCellValue('column_name', 'new_value');
-   */
   updateSelectedCellValue(column, value) {
     if (this.#_syntax === 'old')
       this.jqxGrid.jqxGrid('setcellvalue', this.getSelectedRowIndex(), column, value);
@@ -2204,14 +1661,6 @@ class EnhanceDataGrid {
       this.jqxGrid.setcellvalue(this.getSelectedRowIndex(), column, value);
   } // end of updateSelectedCellValue
 
-  /**
-   * Update URL of data source
-   * @param {String}  url         - New URL
-   * @param {Boolean} autoRefresh - False to disabled auto refresh
-   * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.updateSourceUrl('new_src_url');
-   */
   updateSourceUrl(url, autoRefresh) {
     if (this.#_syntax === 'old') {
       this.#_dataSource.url = url;
