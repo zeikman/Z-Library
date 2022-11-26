@@ -1,4 +1,4 @@
-/**
+/*
  * Enhance Idea
  *
  * - use Class declasrations
@@ -6,65 +6,55 @@
  */
 
 /**
- * Constructs EnhanceDataGrid object
- *
- * @class An enhanced version of jqxGrid with various useful built-in functionalities
+ * An enhanced version of jqxGrid with various useful built-in functionalities.
  * @version 1.0.0
  *
- * @constructor
- * // jqxGrid
- * @param {*} prop.jqxGrid-Properties - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}
- * // EnhanceDataGrid
- * @param {Object} prop EnhanceDataGrid object properties
- * @param {String} prop.id                            - Grid ID
- * @param {String} prop.dataSource=''                 - Grid data source, needed when dataAdapter is not provided, sets [dataSource]{@link EnhanceDataGrid#dataSource}
- * @param {Object} [prop.dataAdapter]                 - Grid data adapter, needed when dataSource is not provided, sets [dataAdapter]{@link EnhanceDataGrid#dataAdapter}
- * @param {Boolean} [prop.searchBar=false]            - Show search bar, sets [searchBar]{@link EnhanceDataGrid#searchBar}
- * @param {String} [prop.checkedDatafield='selected'] - Column name that use to get all selected row ID, sets [checkedDatafield]{@link EnhanceDataGrid#checkedDatafield}
- * @param {Boolean} [prop.rowIndexWidth=50]           - Row index width, sets [rowIndexWidth]{@link EnhanceDataGrid#rowIndexWidth}
- * @param {Boolean} [prop.showRowIndex=true]          - Show row index, sets [showRowIndex]{@link EnhanceDataGrid#showRowIndex}
- * @param {Boolean} [prop.showAdvFilterButton=true]   - Show 'Advanced Filter' button, sets [showAdvFilterButton]{@link EnhanceDataGrid#showAdvFilterButton}
- * // still deciding
- * @param {Boolean} [prop.autoSearch=false]           - If set to true, grid will perform auto searching after 500 miliseconds when user key in, sets [autoSearch]{@link EnhanceDataGrid#autoSearch}
- * @param {Boolean} [prop.enterSearch=false]          - If set to true, grid will perform searching when 'Enter' key pressed, sets [enterSearch]{@link EnhanceDataGrid#enterSearch}
- * @param {Boolean} [prop.enterFilter=true]           - If set to true, grid will perform filtering when 'Enter' key pressed, sets [enterFilter]{@link EnhanceDataGrid#enterFilter}
- * @param {Boolean} [prop.showFindButton=false]       - Show 'Find' button, sets [showFindButton]{@link EnhanceDataGrid#showFindButton}
- * @param {Boolean} [prop.showFilterButton=true]      - Show 'Filter' button, sets [showFilterButton]{@link EnhanceDataGrid#showFilterButton}
- * @param {Boolean} [prop.statusBar=false]            - Show status bar, sets [statusBar]{@link EnhanceDataGrid#statusBar}
- * @!param {Object[]} prop.columns                     - Grid column, sets [columns]{@link EnhanceDataGrid#columns}
- * @!param {Object[]} [prop.columngroups=[]]           - Grid columngroups, sets [columngroups]{@link EnhanceDataGrid#columngroups}
- * // tbElement
- * @param {Object[]} [prop.tbElement=[]]                                - Grid toolbar element, sets [tbElement]{@link EnhanceDataGrid#tbElement}
- * @param {Object} prop.tbElement.<_Properties>                         - Built-in elements
- * @param {String} [prop.tbElement.<_Properties>.button]                - Available button: 'reload', 'add', 'edit', 'delete', 'print', 'excel', 'custom', 'custombutton'<br>Extra element: 'divider', 'separator'
- * @param {String} [prop.tbElement.<_Properties>.text]                  - Button text, applicable to all buttons
- * @param {String} [prop.tbElement.<_Properties>.icon]                  - Button icon (fontAwesome icon), applicable to all buttons, 'none' to hide icon
- * @param {String} [prop.tbElement.<_Properties>.iconColor]             - Button icon color (fontAwesome icon), applicable to all buttons
- * @param {Boolean|Number} [prop.tbElement.<_Properties>.visible]       - If set to true or 1, element will be visible, applicable to all buttons
- * @param {Boolean|Number} [prop.tbElement.<_Properties>.admin]         - If set to true or 1, admin button presentation, applicable to all buttons
- * @param {Function} [prop.tbElement.<_Properties>.click]               - Button $.click() function, applicable to all buttons
- * @param {Function} [prop.tbElement.<_Properties>.beforeClick]         - Callback before $.click() implement, applicable to all buttons
- * @param {Function} [prop.tbElement.<_Properties>.afterClick]          - Callback after $.click() implemented, applicable to all buttons
- * @param {Function} [prop.tbElement.<_Properties>.check]               - Checking function before edit/delete record, only applicable for 'edit', 'delete' button
- * @param {String} [prop.tbElement.<_Properties>.win]                   - jqxWindow ID, only applicable for 'add', 'edit' buttons
- * @param {String} [prop.tbElement.<_Properties>.form]                  - form ID, only applicable for 'add', 'edit' buttons
- * @param {Boolean} [prop.tbElement.<_Properties>.winOpenOnButton=true] - If set to false, jqxWindow will not open with attached to the button, only applicable for 'add', 'edit' buttons
- * @param {Boolean} [prop.tbElement.<_Properties>.autoOpenWindow=true]  - If set to false, jqxWindow will open automatically when button clicked, only applicable for 'add', 'edit' buttons
- * @param {Number} [prop.tbElement.<_Properties>.verticalAlign]         - Set jqxWindow top margin, only applicable for 'add', 'edit' buttons
- * @param {String|Function} [prop.tbElement.<_Properties>.url]          - For 'delete' button: Delete action location<br> For 'print' button: Form file location
- * @param {String} [prop.tbElement.<_Properties>.filename]              - For 'print' button: Form filename<br> For 'excel' button: Excel filename
- * @param {Boolean} [prop.tbElement.<_Properties>.debug=false]          - If set to true, debug message will prompt out if delete action failed, only applicable for 'delete' button
- * @param {Function} [prop.tbElement.<_Properties>.success]             - Callback Function if delete action successed, only applicable for 'delete' button
- * @param {Function} [prop.tbElement.<_Properties>.fail]                - Callback function if delete action failed, only applicable for 'delete' button
- * @param {Function} [prop.tbElement.<_Properties>.param]               - Function to passing dynamic value argument into print action location, only applicable for 'print' button
- * @param {String} [prop.tbElement.<_Properties>.keyword]               - Only applicable and required for 'printAll' button
- * @param {String} [prop.tbElement.<_Properties>.column]                - Only applicable and required for 'printAll' button
- * @param {String} [prop.tbElement.<_Properties>.columnprefix]          - Only applicable and required for 'printAll' button
- * @param {*} [prop.tbElement.<_Properties>.buttonNode]                 - Custom button syntax, only applicable for 'custom' button
- *
- * @!param {Boolean} [prop.extBar=false] - Show external Bar, sets [extBar]{@link EnhanceDataGrid#extBar}
- * @!param {Boolean} [prop.custBar=false] - Show custom bar, sets [custBar]{@link EnhanceDataGrid#custBar}
- *
+ * @param {*}               prop.jqxGridProperties                              - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}
+ * @param {Object}          prop                                                - EnhanceDataGrid object properties
+ * @param {String}          prop.id                                             - Grid ID
+ * @param {String}          prop.dataSource=''                                  - Grid data source, needed when dataAdapter is not provided, sets [dataSource]{@link EnhanceDataGrid#dataSource}
+ * @param {Object}          [prop.dataAdapter]                                  - Grid data adapter, needed when dataSource is not provided, sets [dataAdapter]{@link EnhanceDataGrid#dataAdapter}
+ * @param {Boolean}         [prop.searchBar=false]                              - Show search bar, sets [searchBar]{@link EnhanceDataGrid#searchBar}
+ * @param {String}          [prop.checkedDatafield='selected']                  - Column name that use to get all selected row ID, sets [checkedDatafield]{@link EnhanceDataGrid#checkedDatafield}
+ * @param {Boolean}         [prop.rowIndexWidth=50]                             - Row index width, sets [rowIndexWidth]{@link EnhanceDataGrid#rowIndexWidth}
+ * @param {Boolean}         [prop.showRowIndex=true]                            - Show row index, sets [showRowIndex]{@link EnhanceDataGrid#showRowIndex}
+ * @param {Boolean}         [prop.showAdvFilterButton=true]                     - Show 'Advanced Filter' button, sets [showAdvFilterButton]{@link EnhanceDataGrid#showAdvFilterButton}
+ * @param {Boolean}         [prop.autoSearch=false]                             - If set to true, grid will perform auto searching after 500 miliseconds when user key in, sets [autoSearch]{@link EnhanceDataGrid#autoSearch}
+ * @param {Boolean}         [prop.enterSearch=false]                            - If set to true, grid will perform searching when 'Enter' key pressed, sets [enterSearch]{@link EnhanceDataGrid#enterSearch}
+ * @param {Boolean}         [prop.enterFilter=true]                             - If set to true, grid will perform filtering when 'Enter' key pressed, sets [enterFilter]{@link EnhanceDataGrid#enterFilter}
+ * @param {Boolean}         [prop.showFindButton=false]                         - Show 'Find' button, sets [showFindButton]{@link EnhanceDataGrid#showFindButton}
+ * @param {Boolean}         [prop.showFilterButton=true]                        - Show 'Filter' button, sets [showFilterButton]{@link EnhanceDataGrid#showFilterButton}
+ * @param {Boolean}         [prop.statusBar=false]                              - Show status bar, sets [statusBar]{@link EnhanceDataGrid#statusBar}
+ * @param {Object[]}        [prop.tbElement=[]]                                 - Grid toolbar element, sets [tbElement]{@link EnhanceDataGrid#tbElement}
+ * @param {Object}          prop.tbElement.<_Properties>                        - Built-in elements
+ * @param {String}          [prop.tbElement.<_Properties>.button]               - Available button: 'reload', 'add', 'edit', 'delete', 'print', 'excel', 'custom', 'custombutton'<br>Extra element: 'divider', 'separator'
+ * @param {String}          [prop.tbElement.<_Properties>.text]                 - Button text, applicable to all buttons
+ * @param {String}          [prop.tbElement.<_Properties>.icon]                 - Button icon (fontAwesome icon), applicable to all buttons, 'none' to hide icon
+ * @param {String}          [prop.tbElement.<_Properties>.iconColor]            - Button icon color (fontAwesome icon), applicable to all buttons
+ * @param {Boolean|Number}  [prop.tbElement.<_Properties>.visible]              - If set to true or 1, element will be visible, applicable to all buttons
+ * @param {Boolean|Number}  [prop.tbElement.<_Properties>.admin]                - If set to true or 1, admin button presentation, applicable to all buttons
+ * @param {Function}        [prop.tbElement.<_Properties>.click]                - Button $.click() function, applicable to all buttons
+ * @param {Function}        [prop.tbElement.<_Properties>.beforeClick]          - Callback before $.click() implement, applicable to all buttons
+ * @param {Function}        [prop.tbElement.<_Properties>.afterClick]           - Callback after $.click() implemented, applicable to all buttons
+ * @param {Function}        [prop.tbElement.<_Properties>.check]                - Checking function before edit/delete record, only applicable for 'edit', 'delete' button
+ * @param {String}          [prop.tbElement.<_Properties>.win]                  - jqxWindow ID, only applicable for 'add', 'edit' buttons
+ * @param {String}          [prop.tbElement.<_Properties>.form]                 - form ID, only applicable for 'add', 'edit' buttons
+ * @param {Boolean}         [prop.tbElement.<_Properties>.winOpenOnButton=true] - If set to false, jqxWindow will not open with attached to the button, only applicable for 'add', 'edit' buttons
+ * @param {Boolean}         [prop.tbElement.<_Properties>.autoOpenWindow=true]  - If set to false, jqxWindow will open automatically when button clicked, only applicable for 'add', 'edit' buttons
+ * @param {Number}          [prop.tbElement.<_Properties>.verticalAlign]        - Set jqxWindow top margin, only applicable for 'add', 'edit' buttons
+ * @param {String|Function} [prop.tbElement.<_Properties>.url]                  - For 'delete' button: Delete action location<br> For 'print' button: Form file location
+ * @param {String}          [prop.tbElement.<_Properties>.filename]             - For 'print' button: Form filename<br> For 'excel' button: Excel filename
+ * @param {Boolean}         [prop.tbElement.<_Properties>.debug=false]          - If set to true, debug message will prompt out if delete action failed, only applicable for 'delete' button
+ * @param {Function}        [prop.tbElement.<_Properties>.success]              - Callback Function if delete action successed, only applicable for 'delete' button
+ * @param {Function}        [prop.tbElement.<_Properties>.fail]                 - Callback function if delete action failed, only applicable for 'delete' button
+ * @param {Function}        [prop.tbElement.<_Properties>.param]                - Function to passing dynamic value argument into print action location, only applicable for 'print' button
+ * @param {String}          [prop.tbElement.<_Properties>.keyword]              - Only applicable and required for 'printAll' button
+ * @param {String}          [prop.tbElement.<_Properties>.column]               - Only applicable and required for 'printAll' button
+ * @param {String}          [prop.tbElement.<_Properties>.columnprefix]         - Only applicable and required for 'printAll' button
+ * @param {*}               [prop.tbElement.<_Properties>.buttonNode]           - Custom button syntax, only applicable for 'custom' button
+ */
+
+/*
  * --- Getter
  * Getter grid.jqxGrid;
  *
@@ -95,17 +85,17 @@
  * grid.on()
  */
 class EnhanceDataGrid {
-  /** ====================================================================================
+  /* ====================================================================================
    * static functions
    *
    * https://stackoverflow.com/questions/28627908/call-static-methods-from-regular-es6-class-methods
-   ** ====================================================================================
+   * ====================================================================================
    */
 
   /**
    * Return true if null
    * @static
-   * @param {*} input - Input to check whether is equal to null
+   * @param {*}       input             - Input to check whether is equal to null
    * @param {Boolean} [identical=false] - Whether to check identically equal or not
    * @returns {Boolean} True if null
    * @example
@@ -126,7 +116,7 @@ class EnhanceDataGrid {
   /**
    * Return true if undefined
    * @static
-   * @param {*} input - Input to check whether is equal to undefined
+   * @param {*}       input             - Input to check whether is equal to undefined
    * @param {Boolean} [identical=false] - Whether to check identically equal or not
    * @returns {Boolean} True if undefined
    * @example
@@ -160,8 +150,8 @@ class EnhanceDataGrid {
   /**
    * Return true if input is unset
    * @static
-   * @param {*} input - Input to check whether is unset
-   * @param {Boolean} [trim=false] - Whether to trim input or not
+   * @param {*}       input         - Input to check whether is unset
+   * @param {Boolean} [trim=false]  - Whether to trim input or not
    * @example
    * // true
    * EnhanceDataGrid.isUnset('');
@@ -233,7 +223,7 @@ class EnhanceDataGrid {
   /**
    * Append query string
    * @static
-   * @param {String} url - Uniform Resource Locator
+   * @param {String} url    - Uniform Resource Locator
    * @param {Object} params - query string in object form, { key:value } pair
    * @example
    * EnhanceDataGrid.insertQueryString('url.php', { param1: 'a', param2: 'b' });
@@ -253,8 +243,8 @@ class EnhanceDataGrid {
   /**
    * Debounce function
    * @static
-   * @param {Function} fn - callback function
-   * @param {Number} delay - delay timing
+   * @param {Function}  fn    - callback function
+   * @param {Number}    delay - delay timing
    * @see [Reference]{@link https://remysharp.com/2010/07/21/throttling-function-calls}
    * @example
    * const debounceFunction = EnhanceDataGrid.debounce(() => console.log('hello world'), 1000);
@@ -288,7 +278,7 @@ class EnhanceDataGrid {
   // - https://dojotoolkit.org/reference-guide/1.10/dojo/keys.html
   static isValidKeyboardInput(keyDownEvent) {
     var keys = {
-      /**
+      /*
        * summary:
        *    Definitions for common key values.
        *    Client code should test keyCode against these named constants, as the actual codes can vary by browser.
@@ -405,9 +395,9 @@ class EnhanceDataGrid {
     }
   }
 
-  /** ====================================================================================
+  /* ====================================================================================
    * private properties
-   ** ====================================================================================
+   * ====================================================================================
    */
   #_syntax;
 
@@ -543,14 +533,11 @@ class EnhanceDataGrid {
    */
   #_clearSelection = false;
 
-  /** ====================================================================================
+  /* ====================================================================================
    * private methods
-   ** ====================================================================================
+   * ====================================================================================
    */
 
-  /**
-   * Constructor
-   */
   constructor() {
     let args    = arguments[0];
     let args_1  = arguments[1];
@@ -1682,7 +1669,7 @@ class EnhanceDataGrid {
   /**
    * Filter grid data
    * @private
-   * @param {Object} searchInput
+   * @param {Object}  searchInput
    * @param {Boolean} clearInput
    */
   #_filterData(searchInput, clearInput=false) {
@@ -1729,9 +1716,9 @@ class EnhanceDataGrid {
     }
   } // end of #_filterData
 
-  /** ====================================================================================
+  /* ====================================================================================
    * public methods
-   ** ====================================================================================
+   * ====================================================================================
    */
 
   // exposeFunction() {
@@ -1808,8 +1795,8 @@ class EnhanceDataGrid {
 
   /**
    * Get cell value specified by row index with column name
-   * @param {(String|Number)} rowindex - Row index
-   * @param {String} column - Column name
+   * @param {(String|Number)} rowindex  - Row index
+   * @param {String}          column    - Column name
    * @returns {*} Cell value specified by rowindex
    * @example
    * const grid = new EnhanceDataGrid();
@@ -1825,8 +1812,8 @@ class EnhanceDataGrid {
 
   /**
    * Get cell value specified by row ID with column name
-   * @param {(String|Number)} rowid - Row ID
-   * @param {String} column - Column name
+   * @param {(String|Number)} rowid   - Row ID
+   * @param {String}          column  - Column name
    * @returns {*} Cell value specified by row ID
    * @example
    * const grid = new EnhanceDataGrid();
@@ -2032,15 +2019,15 @@ class EnhanceDataGrid {
     return false;
   } // end of hideColumn
 
-  /**
+  /*
    * This callback is part of the [EnhanceDataGrid.on()]{@link EnhanceDataGrid#on} method
    * @callback EnhanceDataGrid~evtCallback
    * @param {Object} event - EventListener event object
    */
   /**
   * Register grid event listener
-  * @param {String} event - Event name, refer to [jqxGrid API]{@link https://goo.gl/sqcJnv}
-  * @param {EnhanceDataGrid~evtCallback} callback - Event callback function
+  * @param {String}                       event     - Event name, refer to [jqxGrid API]{@link https://goo.gl/sqcJnv}
+  * @param {EnhanceDataGrid~evtCallback}  callback  - Event callback function
   * @example
   * const grid = new EnhanceDataGrid();
   * grid.on('rowselect', event => {
@@ -2173,9 +2160,9 @@ class EnhanceDataGrid {
 
   /**
    * Update cell value specified by row index with column name
-   * @param {(String|Number)} rowindex - Row index
-   * @param {String} column - Column name
-   * @param {*} value - New cell value
+   * @param {(String|Number)} rowindex  - Row index
+   * @param {String}          column    - Column name
+   * @param {*}               value     - New cell value
    * @example
    * const grid = new EnhanceDataGrid();
    * grid.updateCellValue(0, 'column_name', 'new_value');
@@ -2190,9 +2177,9 @@ class EnhanceDataGrid {
 
   /**
    * Update cell value specified by row ID with column name
-   * @param {(String|Number)} rowid - Row ID
-   * @param {String} column - Column name
-   * @param {*} value - New cell value
+   * @param {(String|Number)} rowid   - Row ID
+   * @param {String}          column  - Column name
+   * @param {*}               value   - New cell value
    * @example
    * const grid = new EnhanceDataGrid();
    * grid.updateCellValueById('row_id', 'column_name', 'new_value');
@@ -2203,8 +2190,8 @@ class EnhanceDataGrid {
 
   /**
    * Update selected row cell value
-   * @param {String} column - Column name
-   * @param {*} value - New cell value
+   * @param {String}  column  - Column name
+   * @param {*}       value   - New cell value
    * @example
    * const grid = new EnhanceDataGrid();
    * grid.updateSelectedCellValue('column_name', 'new_value');
@@ -2219,7 +2206,7 @@ class EnhanceDataGrid {
 
   /**
    * Update URL of data source
-   * @param {String} url - New URL
+   * @param {String}  url         - New URL
    * @param {Boolean} autoRefresh - False to disabled auto refresh
    * @example
    * const grid = new EnhanceDataGrid();
