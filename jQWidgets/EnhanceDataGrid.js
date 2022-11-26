@@ -1,3 +1,4 @@
+/** An enhanced version of jqxGrid with various useful functionalities. */
 class EnhanceDataGrid {
   static isNull(input, identical) {
     if (typeof identical === 'boolean' && identical) { return input === null; }
@@ -196,12 +197,16 @@ class EnhanceDataGrid {
     }
   }
 
+  /** @private */
   #_syntax;
 
+  /** @private */
   #_grid;
 
+  /** @private */
   #_id;
 
+  /** @private */
   #_zproplist = [
     'autoSearch',
     'bootstrap',
@@ -223,8 +228,10 @@ class EnhanceDataGrid {
     'useBootstrap',
   ];
 
+  /** @private */
   #_zprops = {};
 
+  /** @private */
   #_props = {
     // same with jqxGrid properties
     theme             : '',
@@ -258,18 +265,25 @@ class EnhanceDataGrid {
     showAdvFilterButton : true,
   };
 
+  /** @private */
   #_dirty = {};
 
+  /** @private */
   #_allDirty = {};
 
+  /** @private */
   #_checkedItems = [];
 
+  /** @private */
   #_dataSource;
 
+  /** @private */
   #_dataAdapter;
 
+  /** @private */
   #_clearSelection = false;
 
+  /** @private */
   #_alert(opt) {
     $.alert({
       ...{
@@ -283,6 +297,7 @@ class EnhanceDataGrid {
     });
   }
 
+  /** @private */
   #_initJqxgrid(syntax) {
     this.#_syntax = syntax;
 
@@ -332,6 +347,7 @@ class EnhanceDataGrid {
     }
   } // end of #_initJqxgrid
 
+  /** @private */
   #_initDirtyFlagEvent() {
     const self = this;
 
@@ -372,11 +388,13 @@ class EnhanceDataGrid {
     });
   } // end of #_initDirtyFlagEvent
 
+  /** @private */
   #_clearDirtyFlag() {
     this.#_dirty    = {};
     this.#_allDirty = {};
   };
 
+  /** @private */
   #_extractZProps() {
     const object = this.#_props;
 
@@ -390,6 +408,7 @@ class EnhanceDataGrid {
     }
   } // end of #_extractZProps
 
+  /** @private */
   #_processColumns() {
     if (this.#_zprops.centeredColumns === true) {
       this.#_props.columns.forEach(c => {
@@ -401,6 +420,7 @@ class EnhanceDataGrid {
     this.#_displayRowIndex();
   } // end of #_processColumns
 
+  /** @private */
   #_displayRowIndex() {
     if (this.#_zprops.showRowIndex) {
       this.#_props.columns.unshift({
@@ -442,6 +462,7 @@ class EnhanceDataGrid {
     }
   } // end of #_displayRowIndex
 
+  /** @private */
   #_renderToolbar() {
     const self = this;
     const gridId = this.#_id;
@@ -675,6 +696,7 @@ class EnhanceDataGrid {
     };
   } // end of #_renderToolbar
 
+  /** @private */
   #_appendToolbarElement(container) {
     const self = this;
     const props = this.#_props;
@@ -1172,6 +1194,7 @@ class EnhanceDataGrid {
     } // EOF for loop
   } // end of #_appendToolbarElement
 
+  /** @private */
   #_generateButtonSyntax(opt) {
     const id          = opt.id;
     const disabled    = opt.disabled;
@@ -1207,6 +1230,7 @@ class EnhanceDataGrid {
     return iconButton;
   } // end of #_generateButtonSyntax
 
+  /** @private */
   #_initGridButton(opt) {
     const container     = opt.container;
     const button        = opt.btn;
@@ -1275,6 +1299,7 @@ class EnhanceDataGrid {
     return buttonElement;
   } // end of #_initGridButton
 
+  /** @private */
   #_getGridButtonProps = (json, key, type) => {
     // console.log(json)
     // console.log(key)
@@ -1324,6 +1349,7 @@ class EnhanceDataGrid {
     return obj;
   }
 
+  /** @private */
   #_filterData(searchInput, clearInput=false) {
     // NOTE: Filter search
     const gridId = this.#_id;
@@ -1368,6 +1394,12 @@ class EnhanceDataGrid {
     }
   } // end of #_filterData
 
+  /**
+   * Constructs EnhanceDataGrid object
+   * @param {*}       prop.jqxGridProperties  - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}
+   * @param {Object}  prop                    - EnhanceDataGrid object properties
+   * @param {String}  prop.id                 - Grid's ID, sets [id]{@link EnhanceDataGrid#id}
+   */
   constructor() {
     let args    = arguments[0];
     let args_1  = arguments[1];
@@ -1394,11 +1426,22 @@ class EnhanceDataGrid {
     this.#_initJqxgrid(syntax);
   } // end of constructor
 
+  /**
+   * Get jqxGrid object
+   * @returns {Object} Grid object
+   * @example
+   * const grid = new EnhanceDataGrid();
+   * grid.jqxGrid;
+   */
   get jqxGrid() {
     // return $(this.id);
     return this.#_grid;
   }
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   clearSelection() {
     // 'none'                  - disables the selection
     // 'singlerow'             - full row selection
@@ -1445,10 +1488,18 @@ class EnhanceDataGrid {
     }
   } // end of clearSelection
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getAllDirty() {
     return this.#_allDirty;
   } // end of getAllDirty
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getCellValue(rowindex, column) {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getcellvalue', rowindex, column);
@@ -1457,14 +1508,26 @@ class EnhanceDataGrid {
       return this.jqxGrid.getcellvalue(rowindex, column);
   } // end of getCellValue
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getCheckedItems() {
     return this.#_checkedItems;
   } // end of getCheckedItems
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getDirty() {
     return this.#_dirty;
   } // end of getDirty
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getRowData(rowindex) {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getrowdata', rowindex);
@@ -1473,6 +1536,10 @@ class EnhanceDataGrid {
       return this.jqxGrid.getrowdata(rowindex);
   } // end of getRowData
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getRows() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getrows');
@@ -1481,6 +1548,10 @@ class EnhanceDataGrid {
       return this.jqxGrid.getrows();
   } // end of getRows
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getSelectedCellValue(column) {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getcellvalue', this.getSelectedRowIndex(), column);
@@ -1489,6 +1560,10 @@ class EnhanceDataGrid {
       return this.jqxGrid.getcellvalue(this.getSelectedRowIndex(), column);
   } // end of getSelectedCellValue
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getSelectedRowData() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getrowdata', this.getSelectedRowIndex());
@@ -1497,6 +1572,10 @@ class EnhanceDataGrid {
       return this.jqxGrid.getrowdata(this.getSelectedRowIndex());
   } // end of getSelectedRowData
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getSelectedRowIndex() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getselectedrowindex');
@@ -1505,6 +1584,10 @@ class EnhanceDataGrid {
       return this.jqxGrid.getselectedrowindex();
   } // end of getSelectedRowIndex
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getSelectedRowIndexes() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('getselectedrowindexes');
@@ -1513,6 +1596,10 @@ class EnhanceDataGrid {
       return this.jqxGrid.getselectedrowindexes();
   } // end of getSelectedRowIndexes
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   getSourceUrl() {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('source')._source.url;
@@ -1522,6 +1609,10 @@ class EnhanceDataGrid {
       return null;
   } // end of getSourceUrl
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   hideColumn(columns) {
     const grid = this.jqxGrid;
 
@@ -1566,11 +1657,19 @@ class EnhanceDataGrid {
     return false;
   } // end of hideColumn
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   on(event, callback) {
     this.jqxGrid.off(event);
     this.jqxGrid.on(event, callback);
   } // end of on
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   refresh() {
     this.#_clearSelection = true;
 
@@ -1581,6 +1680,10 @@ class EnhanceDataGrid {
       this.jqxGrid.updatebounddata();
   } // end of refresh
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   showColumn(columns) {
     const grid = this.jqxGrid;
 
@@ -1625,6 +1728,10 @@ class EnhanceDataGrid {
     return false;
   } // end of showColumn
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   updateBoundData(arg) {
     this.#_clearDirtyFlag();
 
@@ -1645,6 +1752,10 @@ class EnhanceDataGrid {
     }
   } // end of updateBoundData
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   updateCellValue(rowindex, column, value) {
     if (this.#_syntax === 'old')
       this.jqxGrid.jqxGrid('setcellvalue', rowindex, column, value);
@@ -1653,6 +1764,10 @@ class EnhanceDataGrid {
       this.jqxGrid.setcellvalue(rowindex, column, value);
   } // end of updateCellValue
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   updateSelectedCellValue(column, value) {
     if (this.#_syntax === 'old')
       this.jqxGrid.jqxGrid('setcellvalue', this.getSelectedRowIndex(), column, value);
@@ -1661,6 +1776,10 @@ class EnhanceDataGrid {
       this.jqxGrid.setcellvalue(this.getSelectedRowIndex(), column, value);
   } // end of updateSelectedCellValue
 
+  /**
+   * @example
+   * const grid = new EnhanceDataGrid();
+   */
   updateSourceUrl(url, autoRefresh) {
     if (this.#_syntax === 'old') {
       this.#_dataSource.url = url;
