@@ -6,7 +6,7 @@
  * @author    Tan Yong Xiang <zeikmanoffice@gmail.com>
  * @license   MIT License
  * @copyright 2022 Zeikman
- * @version   1.0.0
+ * @version   0.1.0
  *
  * @license
  * <p style="margin: 0; text-align: justify;">

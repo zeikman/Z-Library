@@ -40,7 +40,7 @@
       <div id="grid2" class="float-end"></div>
     </div>
 
-    <div class="grid-container">
+    <div class="grid-container" style="height: 200px;">
       <div id="grid3" class="float-start"></div>
 
       <button id="button1" class="float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -78,6 +78,7 @@
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcheckbox.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxlistbox.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxwindow.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.sort.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.pager.js"></script>
@@ -167,7 +168,7 @@
 
         /* ========== ========== ========== */
         // test 1 - old syntax
-        console.log('%c >> test 1', 'color: red; font-size: 14px; font-weight: bold;');
+        console.log('%c >> test 1 - old syntax', 'color: red; font-size: 14px; font-weight: bold;');
         grid = new EnhanceDataGrid({
           id: '#grid',
           searchBar: true,
@@ -182,11 +183,12 @@
           tbElement: [
             { button: 'reload' },
             { button: 'add' },
-            { button: 'edit', win: 'win',
+            { button: 'edit', win: 'win', text: 'own-click',
               click: function(e, args) {
                 if (args) console.log(args);
               }
             },
+            { button: 'edit' },
             { button: 'delete',
               url: function (data, id) {
                 console.log(data);
@@ -214,7 +216,7 @@
         /* ========== ========== ========== */
         // test 2 - error declare
         //*/
-        console.log('%c >> test 2', 'color: red; font-size: 14px; font-weight: bold;');
+        console.log('%c >> test 2 - error declare', 'color: red; font-size: 14px; font-weight: bold;');
         const grid2 = new EnhanceDataGrid({
           columns: JSON.parse(JSON.stringify(columns)),
           // source: dataAdapter,
@@ -226,7 +228,7 @@
         /* ========== ========== ========== */
         // test 3 - custom width & height
         //*/
-        console.log('%c >> test 3', 'color: red; font-size: 14px; font-weight: bold;');
+        console.log('%c >> test 3 - custom width & height', 'color: red; font-size: 14px; font-weight: bold;');
         const grid5 = new EnhanceDataGrid({
           id: '#grid2',
           width: '60%',
@@ -254,9 +256,9 @@
         //*/
 
         /* ========== ========== ========== */
-        // test 4 - missing DOM
+        // test 4 - invalid DOM
         //*/
-        console.log('%c >> test 4', 'color: red; font-size: 14px; font-weight: bold;');
+        console.log('%c >> test 4 - invalid DOM', 'color: red; font-size: 14px; font-weight: bold;');
         const grid4 = new EnhanceDataGrid({
           id: '#grid_3',
           columns: JSON.parse(JSON.stringify(columns)),
@@ -267,7 +269,7 @@
         /* ========== ========== ========== */
         // test 5 - new syntax
         //*/
-        console.log('%c >> test 5', 'color: red; font-size: 14px; font-weight: bold;');
+        console.log('%c >> test 5 - new syntax', 'color: red; font-size: 14px; font-weight: bold;');
         gridnew = new EnhanceDataGrid('#grid3', {
           width: '80%',
           useBootstrap: true,
