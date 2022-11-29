@@ -21,8 +21,10 @@ Include library after jqxGrid.
 It is recommended to be use with the following libraries to have a prettier UI experience.
 
 [Font-Awesome](https://fontawesome.com/) - Default icon library.
+
 [Bootstrap](https://getbootstrap.com/) - Utilizes Modal, etc.
-[jQuery-Confirm](https://craftpip.github.io/jquery-confirm/) - Utilizes $.confirm, $.alert, and etc.
+
+[jQuery-Confirm](https://craftpip.github.io/jquery-confirm/) - Utilizes jQuery.confirm, jQuery.alert, and etc.
 
 ### How to use
 
@@ -51,6 +53,7 @@ const grid = new EnhanceDataGrid({
   dataSource: 'source_url.php',
   dataAdapter: new $.jqx.dataAdapter('source_url'),
   checkedDatafield: 'checked',
+  useBootstrap: true,
   searchBar: true,
   showFindButton: false,
   showFilterButton: false,
@@ -102,8 +105,13 @@ const grid = new EnhanceDataGrid({
       <td>checkedDatafield</td>
       <td>{String}</td>
       <td>Data field which use to get all selected data ID.</td>
-      'selected'
-      <td></td>
+      <td>'selected'</td>
+    </tr>
+    <tr>
+      <td>useBootstrap</td>
+      <td>{Boolean}</td>
+      <td>Enable/Disable Bootstrap Theme on Grid message.</td>
+      <td>false</td>
     </tr>
     <tr>
       <td>searchBar</td>
@@ -143,9 +151,9 @@ const grid = new EnhanceDataGrid({
     </tr>
     <tr>
       <td>tbElement</td>
-      <td>{Object[]}</td>
+      <td>{Object[ ]}</td>
       <td>Grid's toolbar built-in component.</td>
-      <td>[]</td>
+      <td>[ ]</td>
     </tr>
   </tbody>
 </table>
@@ -178,7 +186,7 @@ const grid = new EnhanceDataGrid({
     </tr>
     <tr>
       <td>getDirty</td>
-      <td>Gets all dirty {id:value} pairs.</td>
+      <td>Gets all dirty { id:value } pairs.</td>
     </tr>
     <tr>
       <td>getRowData</td>
@@ -255,11 +263,11 @@ const grid = new EnhanceDataGrid({
   <tbody>
     <tr>
       <td>isNull</td>
-      <td>Check input is null.</td>
+      <td>Check input is <code>null</code>.</td>
     </tr>
     <tr>
       <td>isUndefined</td>
-      <td>Check input is undefined.</td>
+      <td>Check input is <code>undefined</code>.</td>
     </tr>
     <tr>
       <td>isEmptyString</td>
@@ -287,7 +295,11 @@ const grid = new EnhanceDataGrid({
     </tr>
     <tr>
       <td>debounce</td>
-      <td>Returns a Debounce function.</td>
+      <td>Returns a Debounce function. <a href="https://remysharp.com/2010/07/21/throttling-function-calls">Reference</a></td>
+    </tr>
+    <tr>
+      <td>throttle</td>
+      <td>Returns a Throttle function. <a href="https://remysharp.com/2010/07/21/throttling-function-calls">Reference</a></td>
     </tr>
     <tr>
       <td>isValidKeyboardInput</td>

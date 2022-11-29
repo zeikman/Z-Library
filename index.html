@@ -51,14 +51,123 @@
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            ...
+            <form id="exampleForm">
+              <input type="hidden" name="hidden_hello" value="hello" />
+              <input type="hidden" name="hidden_world" value="world" />
+
+              <div class="row">
+                <div class="col">
+                  <h5>Bootstrap</h5>
+                  <div class="form-group">
+                    <div>Bootstrap Input</div>
+                    <input type="text" id="input" name="normal_input" class="form-control form-control-sm" placeholder="Bootstrap Input" value="testing 123" />
+                  </div>
+                  <div class="form-group">
+                    <div>Bootstrap Date</div>
+                    <input type="date" id="date" name="normal_date" class="form-control form-control-sm" value="2022-01-01" />
+                  </div>
+                  <div class="form-group">
+                    <div>Bootstrap Checks</div>
+                    <div class="d-flex">
+                      <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" id="checksDefault" name="normal_checksDefault">
+                        <label class="form-check-label" for="checksDefault">
+                          Default checkbox
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="checksChecked" name="normal_checksChecked" checked>
+                        <label class="form-check-label" for="checksChecked">
+                          Checked checkbox
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div>Boostrap Radio</div>
+                    <div class="d-flex">
+                      <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" name="normal_RadioIput" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Default radio
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="normal_RadioIput" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Default checked radio
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div>Boostrap Select</div>
+                    <select id="select" name="normal_select" class="form-select form-select-sm">
+                      <option value="0">Open this select menu</option>
+                      <option value="1" selected>One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <div>Boostrap Textarea</div>
+                    <textarea id="textarea" name="normal_textarea" rows="1" class="form-control form-control-sm">hello world</textarea>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <h5>jQWidgets</h5>
+                  <div class="form-group">
+                    <div>jqxInput</div>
+                    <input type="text" id="jqxInput" name="jqxInput" />
+                  </div>
+                  <div class="form-group">
+                    <div>jqxDateTimeInput</div>
+                    <div id="jqxDateTimeInput" name="jqxDateTimeInput"></div>
+                  </div>
+                  <div class="form-group">
+                    <div>jqxCheckBox</div>
+                    <div class="d-flex">
+                      <div id="jqxCheckBox" name="jqxCheckBox" class="me-3">
+                        Entertainment
+                      </div>
+                      <div id="jqxCheckBox2" name="jqxCheckBox2" class="me-3">
+                        <span>Computers</span>
+                      </div>
+                      <div id="jqxCheckBox3" name="jqxCheckBox3" class="me-3">
+                        <span>Sports</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div>jqxRadioButton</div>
+                    <div class="d-flex">
+                      <div id="jqxRadioButton">
+                        12 Months Contract
+                      </div>
+                      <div id="jqxRadioButton2">
+                        <span>6 Months Contract</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div>jqxComboBox</div>
+                    <div id="jqxComboBox" name="jqxComboBox"></div>
+                  </div>
+                  <div class="form-group">
+                    <div>jqxTextArea</div>
+                    <textarea id="jqxTextArea" name="jqxTextArea"></textarea>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -68,14 +177,24 @@
       </div>
     </div>
 
+    <!-- jqxWindow -->
+    <div id="edg_jqxWindow" caption="jqxWindow Title">
+      <div>jqxWindow</div>
+    </div>
+
     <!-- include JS after DOM -->
     <script type="text/javascript" src="jqwidgets-ver14.0.0/scripts/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxbuttons.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdatetimeinput.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcalendar.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxtextarea.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxscrollbar.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxmenu.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcombobox.js"></script>
+    <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxradiobutton.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxlistbox.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdropdownlist.js"></script>
     <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxwindow.js"></script>
@@ -107,7 +226,207 @@
         const button = new jqxButton("button", { width: '120px', height: '35px', theme: 'material' });
         /*/
         const button = new jqxButton("#button1", { width: '120px', height: '35px', theme: 'material' });
-        //*/
+        //*/edg_jqxWindowedg_jqxWindow
+
+        const combodata = [
+          {
+            "CustomerID": "ALFKI",
+            "CompanyName": "Alfreds Futterkiste",
+            "ContactName": "Maria Anders",
+            "ContactTitle": "Sales Representative",
+            "Address": "Obere Str. 57",
+            "City": "Berlin",
+            "Country": "Germany"
+          }, {
+            "CustomerID": "ANATR",
+            "CompanyName": "Ana Trujillo Emparedados y helados",
+            "ContactName": "Ana Trujillo",
+            "ContactTitle": "Owner",
+            "Address": "Avda. de la Constitucin 2222",
+            "City": "Mxico D.F.",
+            "Country": "Mexico"
+          }, {
+            "CustomerID": "ANTON",
+            "CompanyName": "Antonio Moreno Taquera",
+            "ContactName": "Antonio Moreno",
+            "ContactTitle": "Owner",
+            "Address": "Mataderos 2312",
+            "City": "Mxico D.F.",
+            "Country": "Mexico"
+          }, {
+            "CustomerID": "AROUT",
+            "CompanyName": "Around the Horn",
+            "ContactName": "Thomas Hardy",
+            "ContactTitle": "Sales Representative",
+            "Address": "120 Hanover Sq.",
+            "City": "London",
+            "Country": "UK"
+          }, {
+            "CustomerID": "BERGS",
+            "CompanyName": "Berglunds snabbkp",
+            "ContactName": "Christina Berglund",
+            "ContactTitle": "Order Administrator",
+            "Address": "Berguvsvgen 8",
+            "City": "Lule",
+            "Country": "Sweden"
+          }, {
+            "CustomerID": "BLAUS",
+            "CompanyName": "Blauer See Delikatessen",
+            "ContactName": "Hanna Moos",
+            "ContactTitle": "Sales Representative",
+            "Address": "Forsterstr. 57",
+            "City": "Mannheim",
+            "Country": "Germany"
+          }, {
+            "CustomerID": "BLONP",
+            "CompanyName": "Blondesddsl pre et fils",
+            "ContactName": "Frdrique Citeaux",
+            "ContactTitle": "Marketing Manager",
+            "Address": "24, place Klber",
+            "City": "Strasbourg",
+            "Country": "France"
+          }, {
+            "CustomerID": "BOLID",
+            "CompanyName": "Blido Comidas preparadas",
+            "ContactName": "Martn Sommer",
+            "ContactTitle": "Owner",
+            "Address": "C/ Araquil, 67",
+            "City": "Madrid",
+            "Country": "Spain"
+          }, {
+            "CustomerID": "BONAP",
+            "CompanyName": "Bon app'",
+            "ContactName": "Laurence Lebihan",
+            "ContactTitle": "Owner",
+            "Address": "12, rue des Bouchers",
+            "City": "Marseille",
+            "Country": "France"
+          }, {
+            "CustomerID": "BOTTM",
+            "CompanyName": "Bottom-Dollar Markets",
+            "ContactName": "Elizabeth Lincoln",
+            "ContactTitle": "Accounting Manager",
+            "Address": "23 Tsawassen Blvd.",
+            "City": "Tsawassen",
+            "Country": "Canada"
+          }, {
+            "CustomerID": "BSBEV",
+            "CompanyName": "B's Beverages",
+            "ContactName": "Victoria Ashworth",
+            "ContactTitle": "Sales Representative",
+            "Address": "Fauntleroy Circus",
+            "City": "London",
+            "Country": "UK"
+          }, {
+            "CustomerID": "CACTU",
+            "CompanyName": "Cactus Comidas para llevar",
+            "ContactName": "Patricio Simpson",
+            "ContactTitle": "Sales Agent",
+            "Address": "Cerrito 333",
+            "City": "Buenos Aires",
+            "Country": "Argentina"
+          }, {
+            "CustomerID": "CENTC",
+            "CompanyName": "Centro comercial Moctezuma",
+            "ContactName": "Francisco Chang",
+            "ContactTitle": "Marketing Manager",
+            "Address": "Sierras de Granada 9993",
+            "City": "Mxico D.F.",
+            "Country": "Mexico"
+          }, {
+            "CustomerID": "CHOPS",
+            "CompanyName": "Chop-suey Chinese",
+            "ContactName": "Yang Wang",
+            "ContactTitle": "Owner",
+            "Address": "Hauptstr. 29",
+            "City": "Bern",
+            "Country": "Switzerland"
+          }, {
+            "CustomerID": "COMMI",
+            "CompanyName": "Comrcio Mineiro",
+            "ContactName": "Pedro Afonso",
+            "ContactTitle": "Sales Associate",
+            "Address": "Av. dos Lusadas, 23",
+            "City": "Sao Paulo",
+            "Country": "Brazil"
+          }, {
+            "CustomerID": "CONSH",
+            "CompanyName": "Consolidated Holdings",
+            "ContactName": "Elizabeth Brown",
+            "ContactTitle": "Sales Representative",
+            "Address": "Berkeley Gardens 12 Brewery",
+            "City": "London",
+            "Country": "UK"
+          }, {
+            "CustomerID": "DRACD",
+            "CompanyName": "Drachenblut Delikatessen",
+            "ContactName": "Sven Ottlieb",
+            "ContactTitle": "Order Administrator",
+            "Address": "Walserweg 21",
+            "City": "Aachen",
+            "Country": "Germany"
+          }, {
+            "CustomerID": "DUMON",
+            "CompanyName": "Du monde entier",
+            "ContactName": "Janine Labrune",
+            "ContactTitle": "Owner",
+            "Address": "67, rue des Cinquante Otages",
+            "City": "Nantes",
+            "Country": "France"
+          }, {
+            "CustomerID": "EASTC",
+            "CompanyName": "Eastern Connection",
+            "ContactName": "Ann Devon",
+            "ContactTitle": "Sales Agent",
+            "Address": "35 King George",
+            "City": "London",
+            "Country": "UK"
+          }, {
+            "CustomerID": "ERNSH",
+            "CompanyName": "Ernst Handel",
+            "ContactName": "Roland Mendel",
+            "ContactTitle": "Sales Manager",
+            "Address": "Kirchgasse 6",
+            "City": "Graz",
+            "Country": "Austria"
+          }
+        ];
+
+        // init form widget
+        $('#jqxInput').jqxInput({ width: '100%', height: 31, value: 'hello world' });
+        $('#jqxDateTimeInput').jqxDateTimeInput({ width: '100%', height: 31 });
+
+        $('div[id^=jqxCheckBox]').jqxCheckBox({ width: 'auto', height: 26 });
+        $('#jqxCheckBox2').val(true);
+        $('div[id^=jqxRadioButton]').jqxRadioButton({ width: 'auto', height: 26 });
+        $('#jqxRadioButton2').val(true);
+
+        $('#jqxComboBox')
+          .jqxComboBox({
+            width: '100%',
+            height: 31,
+            selectedIndex: 1,
+            displayMember: "ContactName",
+            source: new $.jqx.dataAdapter({
+            valueMember: "CompanyName",
+              /*/
+              datatype: "json",
+              url: "jQWidgets/customers.txt",
+              async: false,
+              /*/
+              datatype: "array",
+              localdata: combodata,
+              //*/
+              datafields: [
+                { name: 'CompanyName' },
+                { name: 'ContactName' }
+              ],
+            }),
+          });
+        $('#jqxTextArea').jqxTextArea({ width: '100%', height: 31 }).val('hello world');
+
+        // init jqxWindow
+        $('#edg_jqxWindow').jqxWindow({ width: 500, height: 300, isModal: true, autoOpen: false });
 
         // prepare the data
         var data = new Array();
@@ -182,17 +501,27 @@
           source: new $.jqx.dataAdapter(source),
           tbElement: [
             { button: 'reload' },
-            { button: 'add' },
-            { button: 'edit', win: 'win', text: 'own-click',
+            { button: 'add', win: '#edg_jqxWindow' },
+            { button: 'edit', win: '#edg_jqxWindow' },
+            { button: 'edit', win: '#edg_jqxWindow', text: 'own-click',
               click: function(e, args) {
-                if (args) console.log(args);
+                console.log(`win: '#edg_jqxWindow' specified, but not open jqxWindow due to own-click function overwritten.`);
+
+                if (args)
+                  console.log(args);
               }
             },
-            { button: 'edit' },
+            { button: 'edit', win: '#edg_jqxWindow', text: 'winOpenOnButton:true', winOpenOnButton: false },
             { button: 'delete',
               url: function (data, id) {
                 console.log(data);
                 console.log(`own functon post() post.php?mod=delete&id=${id}`);
+              },
+              beforeClick: () => {
+                console.log('before delete clicked');
+              },
+              afterClick: () => {
+                console.log('after delete clicked');
               },
             },
             { button: 'separator' },
@@ -222,18 +551,19 @@
           // source: dataAdapter,
           source: new $.jqx.dataAdapter(source),
         });
-        console.log(grid2);
+        // console.log(grid2);
         //*/
 
         /* ========== ========== ========== */
         // test 3 - custom width & height
         //*/
         console.log('%c >> test 3 - custom width & height', 'color: red; font-size: 14px; font-weight: bold;');
+        var openDelete = false;
         const grid5 = new EnhanceDataGrid({
           id: '#grid2',
           width: '60%',
           height: 300,
-          useBootstrap: true,
+          // useBootstrap: true,
           showfilterrow: true,
           columns: JSON.parse(JSON.stringify(columns)),
           // source: dataAdapter,
@@ -244,15 +574,25 @@
             { button: 'edit', text: 'Modal' },
             { button: 'delete', text: 'Modal',
               url: 'post.php?mod=delete',
+              check: function() {
+                if (!openDelete)
+                  console.log('Not open for the first time since check() returns false');
+
+                setTimeout(() => {
+                  openDelete = true;
+                }, 1000);
+
+                return openDelete;
+              },
               param: function() { return { p1: 1, p2: 2 }; }, // dynamic parameters
               // param: { p1: 1, p2: 2 }, // static parameters
             },
             { button: 'divider' },
-            { button: 'add', form: 'form', text: 'Modal+Form' },
-            { button: 'edit', form: 'form', text: 'Modal+Form' },
+            { button: 'add', form: '#exampleForm', text: 'Modal+Form', modal: '#exampleModal', id: 'calladd' },
+            { button: 'edit', form: '#exampleForm', text: 'Modal+Form', modal: '#exampleModal' },
           ]
         });
-        console.log(grid5);
+        // console.log(grid5);
         //*/
 
         /* ========== ========== ========== */
@@ -263,7 +603,7 @@
           id: '#grid_3',
           columns: JSON.parse(JSON.stringify(columns)),
         });
-        console.log(grid4);
+        // console.log(grid4);
         //*/
 
         /* ========== ========== ========== */
@@ -280,16 +620,19 @@
           rowIndexWidth: 60,
           columns: JSON.parse(JSON.stringify(columns)),
           // source: dataAdapter,
-          source: new $.jqx.dataAdapter(source),
+          // source: new $.jqx.dataAdapter(source),
+          source: new $.jqx.dataAdapter(''),
           // TODO: need testing for new syntax
           tbElement: [
             { button: 'reload' },
             { button: 'custom',
               buttonNode: $('<i class="text-danger">New Syntax</i>')
-            }
+            },
+            { button: 'divider' },
+            { button: 'print' },
           ]
         });
-        console.log(gridnew);
+        // console.log(gridnew);
         //*/
 
         // grid3.exposeFunction();

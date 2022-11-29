@@ -2,9 +2,38 @@
 // minami JSDoc theme for LOKE - https://yarnpkg.com/package/loke-jsdoc-theme
 // v2.1.0 - https://www.jsdelivr.com/package/npm/loke-jsdoc-theme
 
+// NOTE: expand jQuery functions ========== ========== ========== ========== ========== ========== ========== ==========
+// clear hidden input value
+/*
+ * Clear hidden input value
+ *
+ * @returns None
+ *
+ * @example
+ * $('#form_id').clearHiddenFields();
+ */
+jQuery.fn.clearHiddenFields = function() {
+  this.find('*').filter(':input[type=hidden]').each(function() { this.value = null; });
+
+  // return this.each(() => {
+  //   console.log(this);
+  //   $("input[type='hidden']", this).each(() => this.value = '');
+  // });
+};
+
+// TODO: need specified which jqxLib.js need to include
 /** An enhanced version of jqxGrid with various useful functionalities. */
 class EnhanceDataGrid {
   // NOTE: Static Methods ========== ========== ========== ========== ========== ========== ========== ==========
+  static checkDuplicateIds() { // Warning Duplicate IDs
+    var self = this;
+    $('[id]').each(function(){
+      var ids = $(`[id="${this.id}"]`);
+      if (ids.length > 1 && ids[0] == this)
+        console.warn(`Multiple IDs #${this.id}|Count@ ${ids.length}`);
+    });
+  }
+
   /**
    * Check input is null.
    *
@@ -221,13 +250,56 @@ class EnhanceDataGrid {
   static debounce(fn, delay) {
     let timer = null;
 
-    return () => {
+    return function() {
       const context = this;
       const args = arguments;
 
       window.clearTimeout(timer);
 
-      timer = window.setTimeout(() => fn.apply(context, args), delay);
+      timer = window.setTimeout(function() {
+        fn.apply(context, args);
+      }, delay);
+    };
+  }
+
+  /**
+   * Throttle function.
+   *
+   * @param {Function}  fn    - Callback function.
+   * @param {Number}    delay - Delay timing.
+   * @param {}          scope - Function scope.
+   *
+   * @returns Throttle function.
+   *
+   * @example
+   * const throttle = EnhanceDataGrid.throttle(function() { console.log('hello world'); }, 2000);
+   * throttle(); // console will print out 'hello world' at most one times two seconds.
+   *
+   * @see [Reference]{@link https://remysharp.com/2010/07/21/throttling-function-calls} - https://remysharp.com/2010/07/21/throttling-function-calls
+   */
+  static throttle(fn, threshhold, scope) {
+    threshhold = threshhold || (threshhold = 250);
+
+    let last        = null;
+    let deferTimer  = null;
+
+    return function() {
+      const context = scope || this;
+      const now = + (new Date());
+      const args = arguments;
+
+      if (last && now < last + threshhold) {
+        // hold on to it
+        window.clearTimeout(deferTimer);
+
+        deferTimer = window.setTimeout(function() {
+          last = now;
+          fn.apply(context, args);
+        }, threshhold);
+      } else {
+        last = now;
+        fn.apply(context, args);
+      }
     };
   }
 
@@ -243,7 +315,7 @@ class EnhanceDataGrid {
    * EnhanceDataGrid.isValidKeyboardInput(<keyDownEvent>('Enter' => 13)); // false
    */
   static isValidKeyboardInput(keyDownEvent) {
-    var keys = {
+    const keys = {
       // summary:
       //    Definitions for common key values.
       //    Client code should test keyCode against these named constants, as the actual codes can vary by browser.
@@ -379,7 +451,6 @@ class EnhanceDataGrid {
     'custBar',
     'enterFilter',
     'enterSearch',
-    'extBar',
     'rowIndexWidth',
     'searchBar',
     'showAdvFilterButton',
@@ -397,35 +468,33 @@ class EnhanceDataGrid {
   /** @private */
   #_props = {
     // same with jqxGrid properties
-    theme             : '',
-    width             : '100%',
-    height            : '100%',
-    sortable          : true,
-    filterable        : true,
-    filtermode        : 'excel',
-    enabletooltips    : true,
-    showaggregates    : true,
-    showstatusbar     : true,
-
+    theme               : '',
+    width               : '100%',
+    height              : '100%',
+    sortable            : true,
+    filterable          : true,
+    filtermode          : 'excel',
+    enabletooltips      : true,
+    showaggregates      : true,
+    showstatusbar       : true,
     // EnhanceDataGrid properties
-    useBootstrap        : false,
-    buttonTheme         : 'material',
-    checkedDatafield    : 'selected',
-    tbElement           : [],
-    rowIndexWidth       : 50,
-    centeredColumns     : false,
-    statusBar           : false,
-    searchBar           : false,
     autoSearch          : false,
-    enterSearch         : false,
-    enterFilter         : true,
-    extBar              : false,
-    custBar             : false,
     bootstrap           : false,
-    showRowIndex        : true,
-    showFindButton      : false,
-    showFilterButton    : true,
+    buttonTheme         : 'material',
+    centeredColumns     : false,
+    checkedDatafield    : 'selected',
+    custBar             : false,
+    enterFilter         : true,
+    enterSearch         : false,
+    rowIndexWidth       : 50,
+    searchBar           : false,
     showAdvFilterButton : true,
+    showFilterButton    : true,
+    showFindButton      : false,
+    showRowIndex        : true,
+    statusBar           : false,
+    tbElement           : [],
+    useBootstrap        : false, // TODO: think about the controlling of this flag, use Bootstrap theme ? function ?
   };
 
   /** @private */
@@ -449,7 +518,8 @@ class EnhanceDataGrid {
   /** @private */
   #_alert(opt) {
     const option_type = typeof opt;
-    let options = {
+    let jquery_confirm_options = {
+      useBootstrap      : this.#_zprops.useBootstrap,
       animation         : 'zoom',
       closeAnimation    : 'zoom',
       animateFromElement: false,
@@ -458,8 +528,8 @@ class EnhanceDataGrid {
     };
 
     if (option_type === 'string') {
-      options = {
-        ...options,
+      jquery_confirm_options = {
+        ...jquery_confirm_options,
         ...{
           title: '',
           content: opt
@@ -468,14 +538,14 @@ class EnhanceDataGrid {
     }
 
     if (option_type === 'object') {
-      options = {
-        ...options,
+      jquery_confirm_options = {
+        ...jquery_confirm_options,
         ...opt
       };
     }
 
     if ($.alert)
-      $.alert(options);
+      $.alert(jquery_confirm_options);
     else {
       if (option_type === 'string')
         window.alert(opt);
@@ -528,7 +598,7 @@ class EnhanceDataGrid {
         this.#_initDirtyFlagEvent();
       }
 
-      // TODO: public methods not applicable for new syntax
+      // TODO: public methods not applicable to new syntax
       if (syntax === 'new') this.#_grid = new jqxGrid(gridId, props);
     } else {
       return console.error(`[EnhanceDataGrid] Error: DOM element '${gridId}' not found !`);
@@ -1012,27 +1082,52 @@ class EnhanceDataGrid {
     };
 
     const controlledMessage = {
-      no_row_selected: 'Please select one of the record first.',
-      no_data_id: 'No data ID found !',
+      no_row_selected : 'Please select one of the record first.',
+      no_data_id      : 'No data ID found !',
+      no_row_print    : 'No record for printing.',
     };
 
     const buttonEvent = {
       click: {
-        _add: event => {
+        _add: function(event) {
           event.preventDefault();
 
           $(this).keydown();
-          console.log('_add');
-          $(this).keyup();
-        },
-        _addForm: event => {
-          event.preventDefault();
 
-          $(this).keydown();
-          console.log('_addForm');
+          const button_id =
+            event.currentTarget.id.indexOf('#') == -1
+              ? '#' + event.currentTarget.id
+              : event.currentTarget.id;
+
+          const check_function = self.#_getGridButtonProps(tbElement, button_id, 'check');
+          const proceed =
+            typeof check_function === 'function'
+              ? check_function()
+              : true;
+
+          // user-defined checking function, returns True|False
+          if (proceed) {
+            const win   = self.#_getGridButtonProps(tbElement, button_id, 'win');
+            const modal = self.#_getGridButtonProps(tbElement, button_id, 'modal');
+            const form  = self.#_getGridButtonProps(tbElement, button_id, 'form');
+
+            if (form)
+              _clearFormInputs(form);
+
+            if (win) {
+              _openJqxWindow({
+                id: button_id, // current button ID
+                element: this, // current target button
+              });
+            }
+
+            if (modal)
+              _openModal(modal/* , { timeout: 2000 } */);
+          }
+
           $(this).keyup();
         },
-        _edit: event => {
+        _edit: function(event) {
           event.preventDefault();
 
           const selectedRowIndex = self.getSelectedRowIndex();
@@ -1040,35 +1135,41 @@ class EnhanceDataGrid {
           if (selectedRowIndex > -1) {
             $(this).keydown();
 
-            // TODO: perform default operation
-            console.log(self.getSelectedRowData());
-            const button_id       = event.currentTarget.id.indexOf('#') === -1
-              ? '#' + event.currentTarget.id
-              : event.currentTarget.id;
-            const win             = self._getGridBtnProp(tbElement, _id, 'win');
-            const winOpenOnButton = self._getGridBtnProp(tbElement, _id, 'winOpenOnButton');
-            const autoOpenWindow  = self._getGridBtnProp(tbElement, _id, 'autoOpenWindow');
-            const verticalAlign   = self._getGridBtnProp(tbElement, _id, 'verticalAlign');
+            const button_id =
+              event.currentTarget.id.indexOf('#') == -1
+                ? '#' + event.currentTarget.id
+                : event.currentTarget.id;
 
-            if (typeof open !== 'boolean' || EnhanceDataGrid.isUnset(open)) { open = true; }
-            if (typeof openWin !== 'boolean' || EnhanceDataGrid.isUnset(openWin)) { openWin = true; }
+            const check_function = self.#_getGridButtonProps(tbElement, button_id, 'check');
+            const proceed =
+              typeof check_function === 'function'
+                ? check_function()
+                : true;
+
+            // user-defined checking function, returns True|False
+            if (proceed) {
+              const win   = self.#_getGridButtonProps(tbElement, button_id, 'win');
+              const modal = self.#_getGridButtonProps(tbElement, button_id, 'modal');
+
+              if (win) {
+                _openJqxWindow({
+                  id: button_id, // current button ID
+                  element: this, // current target button
+                });
+              }
+
+              if (modal)
+                _openModal(modal/* , { timeout: 2000 } */);
+
+              console.log(self.getSelectedRowData());
+            }
 
             $(this).keyup();
           } else {
-            if (zProps.useBootstrap)
-              _createModalError.call(self, 'No Record Selected', controlledMessage.no_row_selected);
-            else
-              this.#_alert(controlledMessage.no_row_selected);
+            _promptError({ error: controlledMessage.no_row_selected });
           }
         },
-        _editForm: event => {
-          event.preventDefault();
-
-          $(this).keydown();
-          console.log('_editForm');
-          $(this).keyup();
-        },
-        _delete: event => {
+        _delete: function(event) {
           event.preventDefault();
 
           const selectedRowIndex = self.getSelectedRowIndex();
@@ -1077,115 +1178,124 @@ class EnhanceDataGrid {
             $(this).keydown();
 
             // NOTE: perform default operation
-            const button_id = event.currentTarget.id.indexOf('#') === -1
-              ? '#' + event.currentTarget.id
-              : event.currentTarget.id;
-            const data      = self.getSelectedRowData();
-            const data_id   = data.id;
-            const _params   = self.#_getGridButtonProps(tbElement, button_id, 'param');
-            const _success  = self.#_getGridButtonProps(tbElement, button_id, 'success');
-            const _fail     = self.#_getGridButtonProps(tbElement, button_id, 'fail');
-            let _url        = self.#_getGridButtonProps(tbElement, button_id, 'url');
-            let _title      = self.#_getGridButtonProps(tbElement, button_id, 'title');
-            let _message    = self.#_getGridButtonProps(tbElement, button_id, 'message');
+            const button_id =
+              event.currentTarget.id.indexOf('#') == -1
+                ? '#' + event.currentTarget.id
+                : event.currentTarget.id;
 
-            _title = (typeof _title === 'undefined' || _title === '') ? 'Delete Record' : _title;
-            _message = (typeof _message === 'undefined' || _message === '') ? 'Are you sure to delete selected record ?' : _message;
+            const check_function = self.#_getGridButtonProps(tbElement, button_id, 'check');
+            const proceed =
+              typeof check_function === 'function'
+                ? check_function()
+                : true;
 
-            $.confirm({
-              columnClass       : 'medium',
-              animation         : 'zoom',
-              closeAnimation    : 'zoom',
-              animateFromElement: false,
-              backgroundDismiss : true,
-              escapeKey         : true,
-              title: _title,
-              content: _message,
-              buttons: {
-                confirm: {
-                  btnClass: 'btn-danger',
-                  action: () => {
-                    if (typeof _url === 'undefined' || _url === undefined || typeof _url === 'null' || _url === null)
-                      return true;
+            // user-defined checking function, returns True|False
+            if (proceed) {
+              const data      = self.getSelectedRowData();
+              const data_id   = data.id;
+              const _params   = self.#_getGridButtonProps(tbElement, button_id, 'param');
+              const _success  = self.#_getGridButtonProps(tbElement, button_id, 'success');
+              const _fail     = self.#_getGridButtonProps(tbElement, button_id, 'fail');
+              let _url        = self.#_getGridButtonProps(tbElement, button_id, 'url');
+              let _title      = self.#_getGridButtonProps(tbElement, button_id, 'title');
+              let _message    = self.#_getGridButtonProps(tbElement, button_id, 'message');
 
-                    // NOTE: user-defined operation
-                    if (typeof _url === 'function') {
-                      if (data_id)
-                        _url(data, data_id);
-                      else
-                        _url(data);
-                    }
+              _title = (typeof _title === 'undefined' || _title === '') ? 'Delete Record' : _title;
+              _message = (typeof _message === 'undefined' || _message === '') ? 'Are you sure to delete selected record ?' : _message;
 
-                    // NOTE: default delete operation, expected url is {String}
-                    if (typeof _url === 'string') {
-                      if (data_id) {
-                        // insert data ID
-                        const _post = { id: data_id };
-                        _url = EnhanceDataGrid.insertQueryString(_url, _post);
-
-                        // combine extra parameters
-                        if (_params && typeof _params === 'object')
-                          _url = EnhanceDataGrid.insertQueryString(_url, _params);
-
-                        if (_params && typeof _params === 'function')
-                          _url = EnhanceDataGrid.insertQueryString(_url, _params());
-
-                        console.log(`$.post() to ${_url}`);
+              $.confirm({
+                useBootstrap      : zProps.useBootstrap,
+                columnClass       : 'medium',
+                animation         : 'zoom',
+                closeAnimation    : 'zoom',
+                animateFromElement: false,
+                backgroundDismiss : true,
+                escapeKey         : true,
+                title: _title,
+                content: _message,
+                buttons: {
+                  confirm: {
+                    btnClass: 'btn-danger',
+                    action: () => {
+                      if (typeof _url === 'undefined' || _url === undefined || typeof _url === 'null' || _url === null)
                         return true;
 
-                        $.post(_url, _post)
-                          .done(resp => {
-                            if (_success && typeof _success === 'function')
-                              _success(resp);
-                            else
-                              self.refresh();
-                          })
-                          .fail(resp => {
-                            if (_fail && typeof _fail === 'function')
-                              _fail(resp);
-                            else {
-                              self.#_alert({ title: 'Delete Failed', content: resp, });
-                            }
-                          });
-                          // .always(resp => {
-                          //   alert("finished");
-                          // });
-                      } else {
-                        self.#_alert({ title: '', content: controlledMessage.no_data_id, });
+                      // NOTE: user-defined operation
+                      if (typeof _url === 'function') {
+                        if (data_id)
+                          _url(data, data_id);
+                        else
+                          _url(data);
+                      }
 
-                        return false;
+                      // NOTE: default delete operation, expected url is {String}
+                      if (typeof _url === 'string') {
+                        if (data_id) {
+                          // insert data ID
+                          const _post = { id: data_id };
+                          _url = EnhanceDataGrid.insertQueryString(_url, _post);
+
+                          // combine extra parameters
+                          if (_params && typeof _params === 'object')
+                            _url = EnhanceDataGrid.insertQueryString(_url, _params);
+
+                          if (_params && typeof _params === 'function')
+                            _url = EnhanceDataGrid.insertQueryString(_url, _params());
+
+                          console.log(`$.post() to ${_url}`);
+                          return true;
+
+                          $.post(_url, _post)
+                            .done(resp => {
+                              if (_success && typeof _success === 'function')
+                                _success(resp);
+                              else
+                                self.refresh();
+                            })
+                            .fail(resp => {
+                              if (_fail && typeof _fail === 'function')
+                                _fail(resp);
+                              else {
+                                self.#_alert({ title: 'Delete Failed', content: resp, });
+                              }
+                            });
+                            // .always(resp => {
+                            //   alert("finished");
+                            // });
+                        } else {
+                          self.#_alert({ title: '', content: controlledMessage.no_data_id, });
+
+                          return false;
+                        }
                       }
                     }
-                  }
-                },
-                cancel: () => {},
-                // somethingElse: {
-                //   text: 'Something else',
-                //   btnClass: 'btn-blue',
-                //   keys: ['enter', 'shift'],
-                //   action: () => {
-                //     $.alert('Something else?');
-                //   }
-                // }
-              }
-            });
+                  },
+                  cancel: () => {},
+                  // somethingElse: {
+                  //   text: 'Something else',
+                  //   btnClass: 'btn-blue',
+                  //   keys: ['enter', 'shift'],
+                  //   action: () => {
+                  //     $.alert('Something else?');
+                  //   }
+                  // }
+                }
+              });
+            }
 
             $(this).keyup();
           } else {
-            if (zProps.useBootstrap)
-              _createModalError.call(self, 'No Record Selected', controlledMessage.no_row_selected);
-            else
-              this.#_alert(controlledMessage.no_row_selected);
+            _promptError({ error: controlledMessage.no_row_selected });
           }
         },
-        _find: event => {
+        _find: function(event) {
           event.preventDefault();
 
           $(this).keydown();
           console.log('_find');
           $(this).keyup();
         },
-        _reload: event => {
+        _reload: function(event) {
           event.preventDefault();
 
           $(this).keydown();
@@ -1194,28 +1304,39 @@ class EnhanceDataGrid {
 
           $(this).keyup();
         },
-        _view: event => {
+        _view: function(event) {
           event.preventDefault();
 
           $(this).keydown();
           console.log('_view');
           $(this).keyup();
         },
-        _save: event => {
+        _save: function(event) {
           event.preventDefault();
 
           $(this).keydown();
           console.log('_save');
           $(this).keyup();
         },
-        _print: event => {
+        _print: function(event) {
           event.preventDefault();
 
-          $(this).keydown();
-          console.log('_print');
-          $(this).keyup();
+          if (self.getRows().length > 0) {
+            const button_id =
+              event.currentTarget.id.indexOf('#') == -1
+                ? '#' + event.currentTarget.id
+                : event.currentTarget.id;
+
+            $(this).keydown();
+
+            console.log('_print');
+
+            $(this).keyup();
+          } else {
+            _promptError({ error: controlledMessage.no_row_print });
+          }
         },
-        _excel: event => {
+        _excel: function(event) {
           event.preventDefault();
 
           $(this).keydown();
@@ -1226,21 +1347,21 @@ class EnhanceDataGrid {
 
           $(this).keyup();
         },
-        _csv: event => {
+        _csv: function(event) {
           event.preventDefault();
 
           $(this).keydown();
           console.log('_csv');
           $(this).keyup();
         },
-        _active: event => {
+        _active: function(event) {
           event.preventDefault();
 
           $(this).keydown();
           console.log('_active');
           $(this).keyup();
         },
-        _inactive: event => {
+        _inactive: function(event) {
           event.preventDefault();
 
           $(this).keydown();
@@ -1249,6 +1370,106 @@ class EnhanceDataGrid {
         },
       }
     };
+
+    function _getElement(opt) {
+      if (typeof opt.id === 'string')
+        return $(opt.id);
+
+      if (typeof opt.id === 'object')
+        return opt.id;
+
+      return null;
+    }
+
+    // Form related functions
+    function _clearFormInputs(form) {
+      if ($(form).length > 0) {
+        // TODO: debug for reset form input
+        let debug = false;
+        debug = true;
+
+        if (debug)
+          console.log(EnhanceDataGrid.transformStringToObject($(form).serialize()));
+
+        // NOTE: clear jqxIput value
+        if ($(form + ' .jqx-input').length > 0)
+          $(form + ' .jqx-input').val(null);
+
+        // NOTE: clear jqxDateTimeInput value
+        if ($(form + ' .jqx-datetimeinput').length > 0)
+          $(form + ' .jqx-datetimeinput').val(null);
+
+        // NOTE: clear jqxCheckBox value
+        if ($(form + ' .jqx-checkbox').length > 0)
+          $(form + ' .jqx-checkbox').jqxCheckBox('uncheck');
+
+        // NOTE: clear jqxRadioButton value
+        if ($(form + ' .jqx-radiobutton').length > 0)
+          $(form + ' .jqx-radiobutton').jqxRadioButton('uncheck');
+
+        // NOTE: clear jqxComboBox value
+        if ($(form + ' .jqx-combobox').length > 0)
+          $(form + ' .jqx-combobox').jqxComboBox('clearSelection');
+
+        // clear <input />
+        $(form).find('*').filter(':input').each(function() { this.value = null; });
+
+        // clear <input[type=checkbox] />
+        $(form).find('input[type=checkbox]').prop('checked', false);
+
+        // clear <input[type=radio] />
+        $(form).find('input[type=radio]').prop('checked', false);
+
+        // clear <select />
+        $(form).find('select').prop('selectedIndex', -1);
+
+        // NOTE: clear hidden input input[type=hidden]
+        $(form).clearHiddenFields();
+
+        if (debug)
+          console.log(EnhanceDataGrid.transformStringToObject($(form).serialize()));
+
+        return true;
+      } else {
+        self.#_alert({
+          title: 'Form Not Found',
+          content: `Form ID: <b>${form}</b>`
+        });
+      }
+    }
+
+    // Modal related functions
+    function _switchModalContent(currentTarget) {
+      const currentElement = $(currentTarget);
+      const parentElement = currentElement.parent();
+
+      parentElement.children().hide();
+      currentElement.show();
+    }
+
+    function _openModal(id, opt/* optional */) {
+      const modal = _getElement({ id: id });
+
+      if (opt) {
+        if (typeof opt.timeout === 'number')
+          setTimeout(() => modal.modal('hide'), opt.timeout);
+
+        if (typeof opt.showContent === 'string') {
+          _switchModalContent(opt.showContent);
+
+          $(opt.showContent).scrollTop(0);
+        }
+      }
+
+      modal.modal('show');
+    }
+
+    function _promptError(opt) {
+      if (zProps.useBootstrap)
+        _createModalError.call(self, 'No Record Selected', opt.error);
+      else
+        self.#_alert(opt.error);
+    }
 
     function _createModalError(modalTitle, modalBody) {
       if (typeof bootstrap === 'object') {
@@ -1296,10 +1517,88 @@ class EnhanceDataGrid {
       }
     }
 
+    // jqxWindow related functions
+    function _openJqxWindow(opt) {
+      const button_id     = opt.id;
+      const el            = opt.element;
+      const win           = self.#_getGridButtonProps(tbElement, button_id, 'win');
+      const verticalAlign = self.#_getGridButtonProps(tbElement, button_id, 'verticalAlign');
+      let winOpenOnButton = self.#_getGridButtonProps(tbElement, button_id, 'winOpenOnButton');
+      let winOpenOnClick  = self.#_getGridButtonProps(tbElement, button_id, 'winOpenOnClick');
+
+      if (typeof winOpenOnButton !== 'boolean' || EnhanceDataGrid.isUnset(winOpenOnButton))
+        winOpenOnButton = true;
+
+      if (typeof winOpenOnClick !== 'boolean' || EnhanceDataGrid.isUnset(winOpenOnClick))
+        winOpenOnClick = true;
+
+      if ($(win).length > 0) {
+        _positioningJqxWindow({
+          ...opt,
+          ...{
+            win     : win,
+            vAlign  : verticalAlign,
+            winOnBtn: winOpenOnButton,
+            openWin : winOpenOnClick,
+          }
+        });
+
+        // NOTE: auto open window when button click
+        if (typeof winOpenOnClick === 'boolean' && winOpenOnClick)
+          $(win).jqxWindow('open');
+      } else {
+        self.#_alert({
+          title: 'jqxWindow Widget Not Found',
+          content: `Button ID: <b>${el.id}</b><br />jqxWindow ID: <b>${win}</b>`
+        });
+      }
+    }
+
+    function _positioningJqxWindow(opt) {
+      const win = opt.win;
+      const el = opt.element;
+      const verticalAlign = opt.vAlign;
+      const winOpenOnButton = opt.winOnBtn;
+
+      // always reset to center
+      $(win).jqxWindow({ position: 'center' });
+
+      if (typeof verticalAlign === 'number') {
+        const response = new $.jqx.response();
+        const viewPort = response.viewPort;
+
+        $(win)
+          .jqxWindow({
+            position: {
+              x: (viewPort.width - $(win).width()) / 2,
+              y: verticalAlign
+            }
+          });
+      }
+
+      if (typeof winOpenOnButton === 'boolean' && winOpenOnButton) {
+        const position = $(el).offset();
+
+        $(win)
+          .jqxWindow({
+            position: {
+              x: position.left,
+              y: position.top
+            }
+          });
+      }
+    }
+
     // To show / hide button
     const flexExpander = $('<div class="flex-expander" style="position: relative; min-width: 20px;" />');
     const separator = $('<div>')
-      .css({ minWidth: 4, width: 4, height: 20, background: '#555555', borderRadius: 5 });
+      .css({
+        minWidth: 4,
+        width: 4,
+        height: 20,
+        background: '#555555',
+        borderRadius: 5
+      });
 
     const widthChangeFunc = event => {
       if ($(this).width() === 20) {
@@ -1378,15 +1677,20 @@ class EnhanceDataGrid {
           // NOTE: Register EventListener
           let funcName = '_' + btn;
 
-          if (tbElement[i].form) funcName += 'Form';
+          // if (tbElement[i].form) funcName += 'Form'; // combine 'normal' and 'form' are same now
 
-          generatedButton.on('click', tbElement[i].click
-            ? e => tbElement[i].click(e, self.getSelectedRowData())
-            : buttonEvent.click[funcName]);
+          generatedButton
+            .on('click',
+              tbElement[i].click
+                ? e => tbElement[i].click(e, self.getSelectedRowData())
+                : buttonEvent.click[funcName]
+            );
 
-          if (tbElement[i].beforeClick) generatedButton.keydown(tbElement[i].beforeClick);
+          if (tbElement[i].beforeClick)
+            generatedButton.keydown(tbElement[i].beforeClick);
 
-          if (tbElement[i].afterClick) generatedButton.keyup(tbElement[i].afterClick);
+          if (tbElement[i].afterClick)
+            generatedButton.keyup(tbElement[i].afterClick);
 
           // NOTE: draw toolbar button
           tbElement[i] = this.#_initGridButton({
@@ -1512,7 +1816,7 @@ class EnhanceDataGrid {
             case 'window'         : obj = v.window; break;
             case 'win'            : obj = v.win; break;
             case 'winOpenOnButton': obj = v.winOpenOnButton; break;
-            case 'autoOpenWindow' : obj = v.autoOpenWindow; break;
+            case 'winOpenOnClick' : obj = v.winOpenOnClick; break;
             case 'verticalAlign'  : obj = v.verticalAlign; break;
             case 'admin'          : obj = v.admin; break;
             case 'visible'        : obj = v.visible; break;
@@ -1587,59 +1891,102 @@ class EnhanceDataGrid {
    * Constructs EnhanceDataGrid object.
    *
    * @todo Try to include following libraries for prettier UI experience.
-   * @todo [Font Awesome (<b><i>Icon Dependency</i></b>)]{@link https://fontawesome.com/} - https://fontawesome.com/
-   * @todo [Bootstrap]{@link https://getbootstrap.com/} - https://getbootstrap.com/
-   * @todo [jQuery-Confirm]{@link https://craftpip.github.io/jquery-confirm/} - https://craftpip.github.io/jquery-confirm/
+   * @todo [<b>Font Awesome (<i>Icon Dependency</i>)</b>]{@link https://fontawesome.com/} - https://fontawesome.com/
+   * @todo [<b>Bootstrap</b>]{@link https://getbootstrap.com/} - https://getbootstrap.com/
+   * @todo [<b>jQuery-Confirm</b>]{@link https://craftpip.github.io/jquery-confirm/} - https://craftpip.github.io/jquery-confirm/
    *
-   * @param {*}               prop.jqxGridProperties              - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}
-   * @param {Object}          prop                                - EnhanceDataGrid object properties, sets [prop]{@link EnhanceDataGrid#prop}
-   * @param {String}          prop.id                             - Grid's ID
-   * @param {String}          prop.dataSource=''                  - Grid's data source, needed when dataAdapter not provided
-   * @param {Object}          [prop.dataAdapter]                  - Grid's data adapter, needed when dataSource not provided
-   * @param {String}          [prop.checkedDatafield='selected']  - Data field which use to get all selected data ID
-   * @param {Boolean}         [prop.searchBar=false]              - Show search bar (in toolbar)
+   * @param {}                prop.jqxGridProperties              - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}.
+   * @param {Object}          prop                                - EnhanceDataGrid object properties, sets [prop]{@link EnhanceDataGrid#prop}.
+   * @param {String}          prop.id                             - Grid's ID.
+   * @param {String}          prop.dataSource=''                  - Grid's data source, needed when dataAdapter not provided.
+   * @param {Object}          [prop.dataAdapter]                  - Grid's data adapter, needed when dataSource not provided.
+   * @param {String}          [prop.checkedDatafield='selected']  - Data field which use to get all selected data ID.
+   * @param {Boolean}         [prop.useBootstrap=false]           - Enable/Disable Bootstrap Theme on Grid message.
+   * @param {Boolean}         [prop.searchBar=false]              - Show search bar (in toolbar).
    *
-   * @param {Boolean}         [prop.showFindButton=false]         - Show 'Find' button (in toolbar)
-   * @param {Boolean}         [prop.showFilterButton=true]        - Show 'Filter' button (in toolbar)
-   * @param {Boolean}         [prop.showAdvFilterButton=true]     - Show 'Advanced Filter' button (in toolbar)
-   * @param {Boolean}         [prop.showRowIndex=true]            - Show row index
-   * @param {Boolean}         [prop.rowIndexWidth=50]             - Row index width
-   * @param {Object[]}        [prop.tbElement=[]]                 - Grid's toolbar built-in component, see "tbElement" parameter
+   * @param {Boolean}         [prop.showFindButton=false]         - Show 'Find' button (in toolbar).
+   * @param {Boolean}         [prop.showFilterButton=true]        - Show 'Filter' button (in toolbar).
+   * @param {Boolean}         [prop.showAdvFilterButton=true]     - Show 'Advanced Filter' button (in toolbar).
+   * @param {Boolean}         [prop.showRowIndex=true]            - Show row index.
+   * @param {Boolean}         [prop.rowIndexWidth=50]             - Row index width.
+   * @param {Object[]}        [prop.tbElement=[]]                 - Grid's toolbar built-in component, see "<code>tbElement</code>" parameter.
    *
-   * @param {Object}          tbElement                         - Built-in components, "prop.tbElement" object properties
-   * @param {String}          tbElement.button                  - Button components : (<i style="color: gray;">width default icon specified</i>)
-   *                                                              <br />&emsp;<b><i>reload</i></b>        : Reload Grid
-   *                                                              <br />&emsp;<b><i>add</i></b>           : Clear Form entries, Open jqxWindow/Bootstrap-Modal
-   *                                                              <br />&emsp;<b><i>edit</i></b>          : Open jqxWindow/Bootstrap-Modal
-   *                                                              <br />&emsp;<b><i>delete</i></b>        : POST request with specified URL
-   *                                                              <br />&emsp;<b><i>print</i></b>         : Open new window with specified URL
-   *                                                              <br />&emsp;<b><i>excel</i></b>         : Export Grid data to excel
-   *                                                              <br />&emsp;<b><i>custombutton</i></b>  : Custom button
-   *                                                              <br />&emsp;<b><i>custom</i></b>        : Custom Element
-   *                                                              <br /><br />
-   *                                                              Extra components :
-   *                                                              <br />&emsp;<b><i>divider</i></b>       : Divider between two components
-   *                                                              <br />&emsp;<b><i>separator</i></b>     : Separator between two components
-   * @param {String}          [tbElement.text]                  - Button text, applicable to all buttons
-   * @param {String}          [tbElement.icon]                  - Button icon (fontAwesome icon), applicable to all buttons, <b>'none'</b> to hide icon
-   * @param {String}          [tbElement.iconColor]             - Button icon color (fontAwesome icon), applicable to all buttons
-   * @param {Boolean|Number}  [tbElement.visible]               - If set to true or 1, component will be visible, applicable to all buttons
-   * @!param {Boolean|Number}  [tbElement.admin]                 - If set to true or 1, admin button presentation, applicable to all buttons
-   * @param {Function}        [tbElement.click]                 - Button's on('click') callback function, applicable to all buttons
-   * @param {Function}        [tbElement.beforeClick]           - Callback function before on('click') implementation, applicable to all buttons
-   * @param {Function}        [tbElement.afterClick]            - Callback function after on('click') implemented, applicable to all buttons
-   * @param {Function}        [tbElement.check]                 - Checking function before edit/delete record, only applicable for <b>'edit'</b>, <b>'delete'</b> button
-   * @param {String}          [tbElement.win]                   - jqxWindow's ID, only applicable for <b>'add'</b>, <b>'edit'</b> buttons
-   * @param {String}          [tbElement.form]                  - form's ID, only applicable for <b>'add'</b>, <b>'edit'</b> buttons
-   * @param {Boolean}         [tbElement.winOpenOnButton=true]  - If set to false, jqxWindow will not open with attached to the button, only applicable for <b>'add'</b>, <b>'edit'</b> buttons
-   * @param {Boolean}         [tbElement.autoOpenWindow=true]   - If set to false, jqxWindow will open automatically when button clicked, only applicable for <b>'add'</b>, <b>'edit'</b> buttons
-   * @param {Number}          [tbElement.verticalAlign]         - Set jqxWindow top margin, only applicable for <b>'add'</b>, <b>'edit'</b> buttons
-   * @param {String|Function} [tbElement.url]                   - For <b>'delete'</b> button: Delete action's location<br /> For <b>'print'</b> button: Form's file location
-   * @param {String}          [tbElement.filename]              - For <b>'print'</b> button: Form filename<br /> For <b>'excel'</b> button: Excel filename
-   * @param {Function}        [tbElement.success]               - Callback Function if delete action successed, only applicable for <b>'delete'</b> button
-   * @param {Function}        [tbElement.fail]                  - Callback function if delete action failed, only applicable for <b>'delete'</b> button
-   * @param {Function}        [tbElement.param]                 - Function to passing dynamic value argument into print action's location, only applicable for <b>'print'</b> button
-   * @param {*}               [tbElement.buttonNode]            - Manual button syntax, only applicable for <b>'custom'</b> button
+   * @param {Object}          tbElement                         - Built-in components, "prop.tbElement" object properties.
+   * @param {String}          tbElement.button                  - Available button components : (<i style="color: gray;">width default behaviour and icon</i>)
+   * <table class="table table-bordered table-condensed table-striped">
+   *   <tr>
+   *     <td><b><i>reload</i></b></td>
+   *     <td>Reload Grid</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>add</i></b></td>
+   *     <td>(1) Clear form entries<br />(2) Open jqxWindow/Bootstrap-Modal</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>edit</i></b></td>
+   *     <td>Open jqxWindow/Bootstrap-Modal</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>delete</i></b></td>
+   *     <td>POST AJAX with specified URL</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>print</i></b></td>
+   *     <td>Open new window with specified URL</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>excel</i></b></td>
+   *     <td>Export Grid data to Excel file</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>csv</i></b></td>
+   *     <td>Export Grid data to CSV file</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>custombutton</i></b></td>
+   *     <td>Custom button</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>custom</i></b></td>
+   *     <td>Custom element, see <code>buttonNode</code> property</td>
+   *   </tr>
+   * </table>
+   *
+   * Other available components :
+   * <table class="table table-bordered table-condensed table-striped" style="margin-bottom: 0;">
+   *   <tr>
+   *     <td><b><i>divider</i></b></td>
+   *     <td>Divider between two components</td>
+   *   </tr>
+   *   <tr>
+   *     <td><b><i>separator</i></b></td>
+   *     <td>Separator between two components</td>
+   *   </tr>
+   * </table>
+   * @param {}                [tbElement.buttonNode]            - Custom element syntax, only applicable to <b>'custom'</b> button.
+   * @param {String}          [tbElement.text]                  - Button text, applicable to all buttons.
+   * @param {String}          [tbElement.icon]                  - Button icon ([<i>Font Awesome</i>]{@link https://fontawesome.com/} icon), applicable to all buttons, sets <b>'none'</b> to hide icon.
+   * @param {String}          [tbElement.iconColor]             - Button icon's color, applicable to all buttons.
+   * @param {Boolean|Number}  [tbElement.visible]               - If set to True or 1, component will be visible, applicable to all buttons.
+   * @!param {Boolean|Number}  [tbElement.admin]                 - If set to True or 1, admin button presentation, applicable to all buttons.
+   * @param {Function}        [tbElement.click]                 - Button's on('click') callback function, applicable to all buttons.
+   * @param {Function}        [tbElement.beforeClick]           - Callback function before on('click') implementation, applicable to all buttons.
+   * @param {Function}        [tbElement.afterClick]            - Callback function after on('click') implemented, applicable to all buttons.
+   * @param {Function}        [tbElement.check]                 - Checking function before default behaviours of buttons, only applicable to <b>'add'</b>, <b>'edit'</b>, <b>'delete'</b> buttons. Return False to stop button's default behaviours.
+   * @param {String}          [tbElement.form]                  - Form's ID, only applicable to <b>'add'</b> button. When provided, form entries will be reset when button clicked. <i style="color: gray;">(Default Behaviour)</i>
+   *                                                              <br /><br />Entries covered :
+   *                                                              <br />&emsp;- &lt;<b>input</b> type="<i>text | date | checkbox | radio</i>" &sol;&gt;, &lt;<b>select</b> &sol;&gt;, &lt;<b>textarea</b> &sol;&gt;
+   *                                                              <br />&emsp;- <b>jqxInput, jqxDateTimeInput, jqxCheckBox, jqxRadioButton, jqxComboBox, jqxTextArea</b>
+   * @param {String}          [tbElement.win]                   - jqxWindow's ID, only applicable to <b>'add'</b>, <b>'edit'</b> buttons. When provided, jqxWindow will open automatically when button clicked. <i style="color: gray;">(Default Behaviour)</i>
+   * @param {String}          [tbElement.modal]                 - Bootstrap Modal's ID, only applicable to <b>'add'</b>, <b>'edit'</b> buttons. When provided, Modal will open automatically when button clicked. <i style="color: gray;">(Default Behaviour)</i>
+   * @param {Boolean}         [tbElement.winOpenOnButton=true]  - If set to False, jqxWindow will not be attached to the button when open, only applicable to <b>'add'</b>, <b>'edit'</b> buttons.
+   * @param {Boolean}         [tbElement.winOpenOnClick=true]   - If set to False, jqxWindow will open when button clicked, only applicable to <b>'add'</b>, <b>'edit'</b> buttons.
+   * @param {Number}          [tbElement.verticalAlign]         - Set jqxWindow top margin, only applicable to <b>'add'</b>, <b>'edit'</b> buttons. When specified, jqxWindow will always be horizontally centered.
+   * @param {String|Function} [tbElement.url]                   - For <b>'delete'</b> button: Delete action's $.post() URL.<br /> For <b>'print'</b> button: Form's file URL.
+   * @param {String}          [tbElement.filename]              - For <b>'print'</b> button: Document filename during download.<br /> For <b>'excel'</b>, <b>'csv'</b> buttons: Excel/CSV filename during export.
+   * @param {Function}        [tbElement.success]               - Callback Function if delete action successed, only applicable to <b>'delete'</b> button.
+   * @param {Function}        [tbElement.fail]                  - Callback function if delete action failed, only applicable to <b>'delete'</b> button.
+   * @param {Function}        [tbElement.param]                 - Function to passing dynamic value argument into print action's location, only applicable to <b>'print'</b> button.
    */
   // insert spacing - https://www.geeksforgeeks.org/how-to-insert-spaces-tabs-in-text-using-html-css/
   constructor() {
@@ -1652,6 +1999,7 @@ class EnhanceDataGrid {
      *   dataSource: 'source_url.php',
      *   dataAdapter: new $.jqx.dataAdapter('source_url'),
      *   checkedDatafield: 'checked',
+     *   useBootstrap: true,
      *   searchBar: true,
      *   showFindButton: false,
      *   showFilterButton: false,
@@ -1660,11 +2008,31 @@ class EnhanceDataGrid {
      *   rowIndexWidth: 100,
      *   tbElement: [
      *     { button: 'reload' },
-     *     { button: 'add' },
-     *     { button: 'edit' },
-     *     { button: 'delete' },
+     *     { button: 'add', win: '#jqxWindow_id', form: '#form_id', winOpenOnButton: false,
+     *       beforeClick: function() {
+     *         // code to be run before button.on('click')
+     *       },
+     *       click: function() {
+     *         // specified this property will overwrite button default behaviour
+     *       },
+     *       afterClick: function() {
+     *         // code to be run after button.on('click')
+     *       },
+     *     },
+     *     { button: 'edit', modal: '#modal_id', form: '#form_id' },
+     *     { button: 'delete',
+     *       url: 'delete.php',
+     *       param: function() { return { param_1: value_1, param_2: value_2 }; },
+     *       check: function() {
+     *         if ($checking_not_passed)
+     *           return false;
+     *         else
+     *           return true;
+     *       },
+     *     },
      *     { button: 'divider' },
-     *     { button: 'excel', filename: 'Export_Excel' },
+     *     { button: 'excel', filename: 'Excel_FIlename_When_Export' },
+     *     { button: 'csv', filename: 'CSV_FIlename_When_Export' },
      *   ],
      * });
      * // new syntax
@@ -1822,9 +2190,9 @@ class EnhanceDataGrid {
   } // end of getCheckedItems
 
   /**
-   * Gets all dirty {id:value} pairs.
+   * Gets all dirty { id:value } pairs.
    *
-   * @returns {Object.<Object>} Object of all dirty {id:value} paris which "value" taken from "datafield" specified in "checkedDatafield" property.
+   * @returns {Object.<Object>} Object of all dirty { id:value } paris which "value" taken from "datafield" specified in "checkedDatafield" property.
    *
    * @example
    * const grid = new EnhanceDataGrid();
