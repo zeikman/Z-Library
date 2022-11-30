@@ -22,7 +22,9 @@ jQuery.fn.clearHiddenFields = function() {
 };
 
 // TODO: need specified which jqxLib.js need to include
-/** An enhanced version of jqxGrid with various useful functionalities. */
+// example : all jqxgrids.js, jqxinput.js, etc
+
+/** An enhanced version of jqxGrid with various useful built-in methods and functionalities. */
 class EnhanceDataGrid {
   // NOTE: Static Methods ========== ========== ========== ========== ========== ========== ========== ==========
   static checkDuplicateIds() { // Warning Duplicate IDs
@@ -598,7 +600,6 @@ class EnhanceDataGrid {
         this.#_initDirtyFlagEvent();
       }
 
-      // TODO: public methods not applicable to new syntax
       if (syntax === 'new') this.#_grid = new jqxGrid(gridId, props);
     } else {
       return console.error(`[EnhanceDataGrid] Error: DOM element '${gridId}' not found !`);
@@ -1085,6 +1086,7 @@ class EnhanceDataGrid {
       no_row_selected : 'Please select one of the record first.',
       no_data_id      : 'No data ID found !',
       no_row_print    : 'No record for printing.',
+      no_url          : 'Please specified "url" property.',
     };
 
     const buttonEvent = {
@@ -1217,8 +1219,10 @@ class EnhanceDataGrid {
                   confirm: {
                     btnClass: 'btn-danger',
                     action: () => {
-                      if (typeof _url === 'undefined' || _url === undefined || typeof _url === 'null' || _url === null)
-                        return true;
+                      if (typeof _url === 'undefined' || _url === undefined || typeof _url === 'null' || _url === null) {
+                        _promptError({ error: controlledMessage.no_url });
+                        return false;
+                      }
 
                       // NOTE: user-defined operation
                       if (typeof _url === 'function') {
@@ -1329,9 +1333,23 @@ class EnhanceDataGrid {
 
             $(this).keydown();
 
-            console.log('_print');
+            const _params = self.#_getGridButtonProps(tbElement, button_id, 'param');
+            let _url      = self.#_getGridButtonProps(tbElement, button_id, 'url');
 
-            $(this).keyup();
+            if (typeof _url === 'undefined' || _url === undefined || typeof _url === 'null' || _url === null) {
+              _promptError({ error: controlledMessage.no_url });
+              return false;
+            }
+
+            if (_params && typeof _params === 'object')
+              _url = EnhanceDataGrid.insertQueryString(_url, _params);
+
+            if (_params && typeof _params === 'function')
+              _url = EnhanceDataGrid.insertQueryString(_url, _params());
+
+            $(this).keyup(); // NOTE: implement keyup before switch to new window tab
+
+            window.open(_url);
           } else {
             _promptError({ error: controlledMessage.no_row_print });
           }
@@ -1909,9 +1927,9 @@ class EnhanceDataGrid {
    * @param {Boolean}         [prop.showAdvFilterButton=true]     - Show 'Advanced Filter' button (in toolbar).
    * @param {Boolean}         [prop.showRowIndex=true]            - Show row index.
    * @param {Boolean}         [prop.rowIndexWidth=50]             - Row index width.
-   * @param {Object[]}        [prop.tbElement=[]]                 - Grid's toolbar built-in component, see "<code>tbElement</code>" parameter.
+   * @param {Object[]}        [prop.tbElement=[ ]]                - Grid's toolbar built-in component, see "<code>tbElement.</code>" parameter for component properties.
    *
-   * @param {Object}          tbElement                         - Built-in components, "prop.tbElement" object properties.
+   * @!param {Object}          tbElement                         - Built-in components, "prop.tbElement" object properties.
    * @param {String}          tbElement.button                  - Available button components : (<i style="color: gray;">width default behaviour and icon</i>)
    * <table class="table table-bordered table-condensed table-striped">
    *   <tr>
@@ -1928,11 +1946,11 @@ class EnhanceDataGrid {
    *   </tr>
    *   <tr>
    *     <td><b><i>delete</i></b></td>
-   *     <td>POST AJAX with specified URL</td>
+   *     <td>POST AJAX with URL provided</td>
    *   </tr>
    *   <tr>
    *     <td><b><i>print</i></b></td>
-   *     <td>Open new window with specified URL</td>
+   *     <td>Open URL provided in new tab</td>
    *   </tr>
    *   <tr>
    *     <td><b><i>excel</i></b></td>
@@ -1972,7 +1990,6 @@ class EnhanceDataGrid {
    * @param {Function}        [tbElement.click]                 - Button's on('click') callback function, applicable to all buttons.
    * @param {Function}        [tbElement.beforeClick]           - Callback function before on('click') implementation, applicable to all buttons.
    * @param {Function}        [tbElement.afterClick]            - Callback function after on('click') implemented, applicable to all buttons.
-   * @param {Function}        [tbElement.check]                 - Checking function before default behaviours of buttons, only applicable to <b>'add'</b>, <b>'edit'</b>, <b>'delete'</b> buttons. Return False to stop button's default behaviours.
    * @param {String}          [tbElement.form]                  - Form's ID, only applicable to <b>'add'</b> button. When provided, form entries will be reset when button clicked. <i style="color: gray;">(Default Behaviour)</i>
    *                                                              <br /><br />Entries covered :
    *                                                              <br />&emsp;- &lt;<b>input</b> type="<i>text | date | checkbox | radio</i>" &sol;&gt;, &lt;<b>select</b> &sol;&gt;, &lt;<b>textarea</b> &sol;&gt;
@@ -1982,11 +1999,18 @@ class EnhanceDataGrid {
    * @param {Boolean}         [tbElement.winOpenOnButton=true]  - If set to False, jqxWindow will not be attached to the button when open, only applicable to <b>'add'</b>, <b>'edit'</b> buttons.
    * @param {Boolean}         [tbElement.winOpenOnClick=true]   - If set to False, jqxWindow will open when button clicked, only applicable to <b>'add'</b>, <b>'edit'</b> buttons.
    * @param {Number}          [tbElement.verticalAlign]         - Set jqxWindow top margin, only applicable to <b>'add'</b>, <b>'edit'</b> buttons. When specified, jqxWindow will always be horizontally centered.
-   * @param {String|Function} [tbElement.url]                   - For <b>'delete'</b> button: Delete action's $.post() URL.<br /> For <b>'print'</b> button: Form's file URL.
    * @param {String}          [tbElement.filename]              - For <b>'print'</b> button: Document filename during download.<br /> For <b>'excel'</b>, <b>'csv'</b> buttons: Excel/CSV filename during export.
-   * @param {Function}        [tbElement.success]               - Callback Function if delete action successed, only applicable to <b>'delete'</b> button.
+   * @param {String|Function} [tbElement.url]                   - If <code>url</code> is in String form,
+   *                                                              <br />&emsp;For <b>'delete'</b> button: Delete action's $.post() URL.
+   *                                                              <br />&emsp;For <b>'print'</b> button: Form's file URL.
+   *                                                              <br />If <code>url</code> is in Function form, following arguments are supported,
+   *                                                              <br />&emsp;<b>function(</b>selected_row_data [, selected_row_data_id]<b>)</b> {...}
+   *                                                              <br />&emsp;<i style="color:red;">NOTE: </i><i><b>'selected_row_data_id'</b> will available automatically when <b>'id'</b> field detected in data object</i>
+   * @param {Function}        [tbElement.check]                 - Checking function before implement default behaviours of buttons, only applicable to <b>'add'</b>, <b>'edit'</b>, <b>'delete'</b> buttons. Return False to stop button's default behaviours.
+   * @param {Object|Function} [tbElement.param]                 - Function to append dynamic arguments into <code>url</code> property, only functional when <code>url</code> provided is in <b>String form</b>.
+   * @param {Function}        [tbElement.success]               - Callback function if delete action successed, only applicable to <b>'delete'</b> button.
    * @param {Function}        [tbElement.fail]                  - Callback function if delete action failed, only applicable to <b>'delete'</b> button.
-   * @param {Function}        [tbElement.param]                 - Function to passing dynamic value argument into print action's location, only applicable to <b>'print'</b> button.
+   * @!param print action's location, only applicable to <b>'print'</b> button.
    */
   // insert spacing - https://www.geeksforgeeks.org/how-to-insert-spaces-tabs-in-text-using-html-css/
   constructor() {
@@ -1994,26 +2018,27 @@ class EnhanceDataGrid {
      * EnhanceDataGrid properties.
      *
      * @example
+     * // normal syntax
      * new EnhanceDataGrid({
-     *   id: '#grid_id',
-     *   dataSource: 'source_url.php',
-     *   dataAdapter: new $.jqx.dataAdapter('source_url'),
-     *   checkedDatafield: 'checked',
-     *   useBootstrap: true,
-     *   searchBar: true,
-     *   showFindButton: false,
-     *   showFilterButton: false,
+     *   id                 : '#grid_id',
+     *   dataSource         : {source_url_object}, // Refer to updateSourceUrl() method for example
+     *   dataAdapter        : new $.jqx.dataAdapter({source_url_object}),
+     *   checkedDatafield   : 'checked',
+     *   useBootstrap       : true,
+     *   searchBar          : true,
+     *   showFindButton     : false,
+     *   showFilterButton   : false,
      *   showAdvFilterButton: false,
-     *   showRowIndex: false,
-     *   rowIndexWidth: 100,
-     *   tbElement: [
+     *   showRowIndex       : false,
+     *   rowIndexWidth      : 100,
+     *   tbElement          : [
      *     { button: 'reload' },
      *     { button: 'add', win: '#jqxWindow_id', form: '#form_id', winOpenOnButton: false,
      *       beforeClick: function() {
      *         // code to be run before button.on('click')
      *       },
      *       click: function() {
-     *         // specified this property will overwrite button default behaviour
+     *         // if provided, the function will overwrite button default behaviour
      *       },
      *       afterClick: function() {
      *         // code to be run after button.on('click')
@@ -2021,13 +2046,27 @@ class EnhanceDataGrid {
      *     },
      *     { button: 'edit', modal: '#modal_id', form: '#form_id' },
      *     { button: 'delete',
-     *       url: 'delete.php',
-     *       param: function() { return { param_1: value_1, param_2: value_2 }; },
      *       check: function() {
      *         if ($checking_not_passed)
      *           return false;
      *         else
      *           return true;
+     *       },
+     *       success: function() {
+     *         // your own coding
+     *         // works ONLY when POST AJAX returned result in JSON form with { success: 1 }
+     *       },
+     *       fail: function() {
+     *         // your own coding
+     *         // works ONLY when POST AJAX returned result in JSON form with { success: 0 }
+     *       },
+     *       // url in String form
+     *       url  : 'delete.php',
+     *       param: { param_1: value_1, param_2: value_2 },                         // use this format when your parameters are decided before Grid init and then fix.
+     *       param: function() { return { param_1: value_1, param_2: value_2 }; },  // use this format when your parameters are decided when button click (Recommended)
+     *       // url in Function form
+     *       url: function(row_data, data_id) {
+     *         // your own code
      *       },
      *     },
      *     { button: 'divider' },
@@ -2037,11 +2076,11 @@ class EnhanceDataGrid {
      * });
      * // new syntax
      * new EnhanceDataGrid('#grid_id', {
-     *   dataSource: 'source_url.php',
+     *   id: '#grid_id',
      *   ...
      * });
      *
-     * @see for dataAdapter, Refer [jqxAdapter API]{@link https://goo.gl/AxUONX}, search for keyword 'source' at [jqxGrid API]{@link https://goo.gl/sqcJnv}
+     * @see for dataAdapter, refer [jqxAdapter API]{@link https://goo.gl/AxUONX}, search for keyword 'source' at [jqxGrid API]{@link https://goo.gl/sqcJnv}.
      */
     this.prop;
 
@@ -2572,15 +2611,34 @@ class EnhanceDataGrid {
    * @returns None
    *
    * @example
-   * const grid = new EnhanceDataGrid();
-   * grid.updateSourceUrl('new_source_url.php');
+   * // This method only support JSON type data source with URL as following:
+   * const grid = new EnhanceDataGrid({
+   *   dataSource: {
+   *     datatype   : 'json',
+   *     url        : 'source_url.php',
+   *     id         : 'id',
+   *     datafields : [
+   *       { name: 'id', type: 'number' },
+   *       { name: 'name', type: 'string' },
+   *       ...
+   *     ],
+   *   }
+   * });
+   * const new_source_url = EnhanceDataGrid.insertQueryString('new_source_url.php', {
+   *   parameter1: value1,
+   *   parameter2: value2,
+   *   ...
+   * });
+   * grid.updateSourceUrl(new_source_url);
+   *
+   * @see jqxGrid has multiple types of data collections, refer [Grid Data Sources]{@link https://www.jqwidgets.com/jquery-widgets-documentation/documentation/jqxgrid/jquery-grid-datasources.htm?search=jqxGrid} for complete reference.
    */
   updateSourceUrl(url, autoRefresh) {
     if (this.#_syntax === 'old') {
-      this.#_dataSource.url = url;
-
       if (!this.#_dataSource)
         this.dataAdapter._source.url = url;
+      else
+        this.#_dataSource.url = url;
 
       if (typeof autoRefresh === 'undefined' || (typeof autoRefresh === 'boolean' && autoRefresh))
         this.refresh();
