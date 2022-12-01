@@ -1,18 +1,18 @@
 # Z-Library
-jQwidgets/EnhanceDataGrid.js
+jQWidgets/EnhanceDataGrid.js
 
 ## EnhanceDataGrid.js
 
-EnhanceDataGrid is a library that extend jQWidgets jqxGrid widget and provides a lot of useful built-in methods.
+EnhanceDataGrid is a library that extend [jQWidgets](https://www.jqwidgets.com/) jqxGrid widget and provides a lot of useful built-in methods and functionalities.
 
 ## Get Started
 
-Include library after jqxGrid.
+Include EnhanceDataGrid library after jqxGrid library.
 
 ```sh
 <link rel="stylesheet" href="path-to-jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css" />
 <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.js"></script>
-...other necessary dependency
+<!-- All jqxgrid related libraries and other necessary dependency libraries -->
 
 <link rel="stylesheet" href="jQWidgets/EnhanceDataGrid.css" type="text/css" />
 <script type="text/javascript" src="jQWidgets/EnhanceDataGrid.js"></script>
@@ -20,53 +20,52 @@ Include library after jqxGrid.
 
 It is recommended to be use with the following libraries to have a prettier UI experience.
 
-[Font-Awesome](https://fontawesome.com/) - Default icon library.
+[Font-Awesome](https://fontawesome.com/) - Default icon library. (Current version: 6.2.1)
 
-[Bootstrap](https://getbootstrap.com/) - Utilizes Modal, etc.
+[Bootstrap](https://getbootstrap.com/) - Utilizes Modal, etc. (Current version: 5.2.3)
 
-[jQuery-Confirm](https://craftpip.github.io/jquery-confirm/) - Utilizes jQuery.confirm, jQuery.alert, and etc.
+[jQuery-Confirm](https://craftpip.github.io/jquery-confirm/) - Utilizes jQuery.confirm, jQuery.alert, and etc. (Current version: 3.3.4)
 
 ### How to use
 
 Full [documentation](https://coming-soon.com) is over here.
 
 ```javascript
+const source_url_object = {
+  id: 'id',
+  datafields: [
+    { name: 'id', type: 'number' },
+    ...
+  ],
+  // example for JSON
+  datatype: "json",
+  url: 'url.php',
+  // example for local Array
+  datatype: "array",
+  localdata: [Array of Object],
+};
 const grid = new EnhanceDataGrid({
   // jqxGrid properties
   column: [...],
-  source: new $.jqx.dataAdapter({
-    id: 'id',
-    datafields: [
-      { name: 'id', type: 'number' },
-      ...
-    ],
-    // example for JSON
-    datatype: "json",
-    url: 'url.php',
-    // example for local Array
-    datatype: "array",
-    localdata: [Array of Object],
-  }),
+  source: new $.jqx.dataAdapter(source_url_object),
   ...
   // EnhanceDataGrid properties
-  id: '#grid_id',
-  dataSource: 'source_url.php',
-  dataAdapter: new $.jqx.dataAdapter('source_url'),
-  checkedDatafield: 'checked',
-  useBootstrap: true,
-  searchBar: true,
-  showFindButton: false,
-  showFilterButton: false,
-  showAdvFilterButton: false,
-  showRowIndex: false,
-  rowIndexWidth: 100,
-  tbElement: [
+  id                  : '#grid_id',
+  dataSource          : source_url_object,
+  dataAdapter         : new $.jqx.dataAdapter(source_url_object), // same as jqxGrid's "source" property
+  checkedDatafield    : 'checked',
+  useBootstrap        : true,
+  searchBar           : true,
+  showFindButton      : false,
+  showFilterButton    : false,
+  showAdvFilterButton : false,
+  showRowIndex        : false,
+  rowIndexWidth       : 100,
+  tbElement           : [
     { button: 'reload' },
     { button: 'add' },
     { button: 'edit' },
-    { button: 'delete' },
-    { button: 'divider' },
-    { button: 'excel', filename: 'Export_Excel' },
+    ...
   ],
 });
 ```
@@ -152,7 +151,10 @@ const grid = new EnhanceDataGrid({
     <tr>
       <td>tbElement</td>
       <td>{Object[ ]}</td>
-      <td>Grid's toolbar built-in component.</td>
+      <td>Grid's toolbar built-in component.
+        <br />Button component: 'reload', 'add', 'edit', 'delete', 'print', 'excel', 'csv', 'custombutton', 'custom'
+        <br />Other component: 'divider', 'separator'
+      </td>
       <td>[ ]</td>
     </tr>
   </tbody>
