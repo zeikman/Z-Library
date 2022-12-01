@@ -2,6 +2,54 @@
 // minami JSDoc theme for LOKE - https://yarnpkg.com/package/loke-jsdoc-theme
 // v2.1.0 - https://www.jsdelivr.com/package/npm/loke-jsdoc-theme
 
+// NOTE: Develop with following libraries ========== ========== ========== ========== ========== ========== ========== ==========
+{/*
+  <!-- jQuery v1.11.1 ->
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/scripts/jquery-1.11.1.min.js"></script>
+
+  <!-- jQWidget v14.0.0 ->
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcore.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxbuttons.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxinput.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdatetimeinput.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcalendar.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxtextarea.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxscrollbar.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxmenu.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcheckbox.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcombobox.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxradiobutton.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxlistbox.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdropdownlist.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxwindow.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.sort.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.pager.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.selection.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.edit.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.filter.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.aggregates.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.export.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdata.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdata.export.js"></script>
+  <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxexport.js"></script>
+
+  <!-- JSZIP - https://stuk.github.io/jszip/, needed for jqxGrid Export -->
+  <script type="text/javascript" src="jszip-v3.10.1/dist/jszip.min.js"></script>
+
+  <!-- Font Awesome v6.2.1 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"
+    integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+
+  <!-- Bootstrap v5.2.3 -->
+  <script type="text/javascript" src="bootstrap-5.2.3/js/bootstrap.bundle.js"></script>
+
+  <!-- jQuery-Confirm v3.3.4 -->
+  <script type="text/javascript" src="jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
+*/}
+
 // NOTE: expand jQuery functions ========== ========== ========== ========== ========== ========== ========== ==========
 // clear hidden input value
 /*
@@ -14,23 +62,17 @@
  */
 jQuery.fn.clearHiddenFields = function() {
   this.find('*').filter(':input[type=hidden]').each(function() { this.value = null; });
-
-  // return this.each(() => {
-  //   console.log(this);
-  //   $("input[type='hidden']", this).each(() => this.value = '');
-  // });
 };
-
-// TODO: need specified which jqxLib.js need to include
-// example : all jqxgrids.js, jqxinput.js, etc
 
 /** An enhanced version of jqxGrid with various useful built-in methods and functionalities. */
 class EnhanceDataGrid {
   // NOTE: Static Methods ========== ========== ========== ========== ========== ========== ========== ==========
   static checkDuplicateIds() { // Warning Duplicate IDs
-    var self = this;
+    const self = this;
+
     $('[id]').each(function(){
-      var ids = $(`[id="${this.id}"]`);
+      const ids = $(`[id="${this.id}"]`);
+
       if (ids.length > 1 && ids[0] == this)
         console.warn(`Multiple IDs #${this.id}|Count@ ${ids.length}`);
     });
@@ -451,8 +493,11 @@ class EnhanceDataGrid {
     'centeredColumns',
     'checkedDatafield',
     'custBar',
+    'dataAdapter',
+    'dataSource',
     'enterFilter',
     'enterSearch',
+    'jsonSource',
     'rowIndexWidth',
     'searchBar',
     'showAdvFilterButton',
@@ -486,8 +531,11 @@ class EnhanceDataGrid {
     centeredColumns     : false,
     checkedDatafield    : 'selected',
     custBar             : false,
+    dataAdapter         : new $.jqx.dataAdapter(''),
+    dataSource          : '',
     enterFilter         : true,
     enterSearch         : false,
+    jsonSource          : null,
     rowIndexWidth       : 50,
     searchBar           : false,
     showAdvFilterButton : true,
@@ -507,6 +555,9 @@ class EnhanceDataGrid {
 
   /** @private */
   #_checkedItems = [];
+
+  /** @private */
+  #_jsonSource;
 
   /** @private */
   #_dataSource;
@@ -569,12 +620,61 @@ class EnhanceDataGrid {
     const gridId        = this.#_id;
     const props         = this.#_props;
     const zProps        = this.#_zprops;
+
     const tbElement     = zProps.tbElement;
     const hasTbElement  = tbElement.length > 0;
     const showSearchBar = typeof zProps.searchBar === 'boolean' && zProps.searchBar;
 
+    // show toolbar
     if (hasTbElement || showSearchBar) props.showtoolbar = true;
 
+    // setup source
+    this.#_jsonSource = zProps.jsonSource; // { url=string, datafields=[ ], opt={ async } }
+    this.#_dataSource = zProps.dataSource;
+    this.#_dataAdapter = zProps.dataAdapter;
+
+    if (EnhanceDataGrid.isUnset(props['source'])) {
+      // last priority
+      if (this.#_jsonSource && typeof this.#_jsonSource === 'object') {
+        this.#_dataSource = {
+          url       : this.#_jsonSource.url ? this.#_jsonSource.url : '',
+          datafields: this.#_jsonSource.datafields ? this.#_jsonSource.datafields : [],
+          datatype  : 'json',
+          id        : 'id',
+          cache     : false,
+          addrow: function(rowid, rowdata, position, commit) {
+            const data = $.param(rowdata);
+
+            $.ajax({
+              url     : this.#_jsonSource.url,
+              data    : data,
+              dataType: 'json',
+              cache   : false,
+              success : function(data, status, xhr) { commit(true); },
+              error   : function(jqXhr, textStatus, errorThrown) { commit(false); },
+            });
+          },
+          deleterow: function(rowid, commit) { commit(true); },
+          updaterow: function(rowid, newdata, commit) { commit(true); },
+        };
+
+        if (this.#_jsonSource['opt'] && typeof this.#_jsonSource['opt'] === 'object')
+          this.#_dataSource = {
+            ...this.#_dataSource,
+            ...this.#_jsonSource.opt
+          };
+      }
+
+      // second priority
+      if (this.#_dataSource)
+        props['source'] = new $.jqx.dataAdapter(this.#_dataSource);
+
+      // first priority
+      if (this.#_dataAdapter)
+        props['source'] = this.#_dataAdapter;
+    }
+
+    // default 'bindingcomplete' event listener
     $(gridId).on('bindingcomplete', event => {
       // NOTE: initialize checkeditems array, in case there are pre-selected items
       const rows              = $(self.#_id).jqxGrid('getrows');
@@ -871,7 +971,7 @@ class EnhanceDataGrid {
 
             $(gridId).jqxGrid('clearfilters');
 
-            // TODO:: think about operation between single column filer and advanced filter
+            // TODO:: think about callback operation between single column filer and advanced filter
             // if (!$(gridId).jqxGrid('showfilterrow'))
               searchInput.val(null);
           });
@@ -999,33 +1099,33 @@ class EnhanceDataGrid {
         height    : 25,
         widget    : 'jqxButton',
       },
-      find: {
-        icon      : 'fa-solid fa-fw fa-search',
-        // iconColor : '',
-        // text      : 'Find',
-        title     : 'Find',
-        width     : 60,
-        height    : 25,
-        widget    : 'jqxButton',
-      },
-      view: {
-        icon      : 'fa-solid fa-fw fa-eye',
-        // iconColor : '',
-        // text      : 'View',
-        title     : 'View',
-        width     : 60,
-        height    : 25,
-        widget    : 'jqxButton',
-      },
-      save: {
-        icon      : 'fa-solid fa-fw fa-save',
-        // iconColor : '',
-        // text      : 'Save',
-        title     : 'Save',
-        width     : 25,
-        height    : 25,
-        widget    : 'jqxButton',
-      },
+      // find: {
+      //   icon      : 'fa-solid fa-fw fa-search',
+      //   // iconColor : '',
+      //   // text      : 'Find',
+      //   title     : 'Find',
+      //   width     : 60,
+      //   height    : 25,
+      //   widget    : 'jqxButton',
+      // },
+      // view: {
+      //   icon      : 'fa-solid fa-fw fa-eye',
+      //   // iconColor : '',
+      //   // text      : 'View',
+      //   title     : 'View',
+      //   width     : 60,
+      //   height    : 25,
+      //   widget    : 'jqxButton',
+      // },
+      // save: {
+      //   icon      : 'fa-solid fa-fw fa-save',
+      //   // iconColor : '',
+      //   // text      : 'Save',
+      //   title     : 'Save',
+      //   width     : 25,
+      //   height    : 25,
+      //   widget    : 'jqxButton',
+      // },
       print: {
         icon      : 'fa-solid fa-fw fa-print',
         // iconColor : '#0f35fb',
@@ -1053,24 +1153,24 @@ class EnhanceDataGrid {
         height    : 25,
         widget    : 'jqxButton',
       },
-      active: {
-        icon      : 'fa-regular fa-fw fa-bell',
-        // iconColor : '#00af00',
-        // text      : 'Active',
-        title     : 'Active',
-        width     : 70,
-        height    : 25,
-        widget    : 'jqxButton',
-      },
-      inactive: {
-        icon      : 'fa-regular fa-fw fa-bell-slash',
-        // iconColor : '#ff0000',
-        // text      : 'Inactive',
-        title     : 'Inactive',
-        width     : 85,
-        height    : 25,
-        widget    : 'jqxButton',
-      },
+      // active: {
+      //   icon      : 'fa-regular fa-fw fa-bell',
+      //   // iconColor : '#00af00',
+      //   // text      : 'Active',
+      //   title     : 'Active',
+      //   width     : 70,
+      //   height    : 25,
+      //   widget    : 'jqxButton',
+      // },
+      // inactive: {
+      //   icon      : 'fa-regular fa-fw fa-bell-slash',
+      //   // iconColor : '#ff0000',
+      //   // text      : 'Inactive',
+      //   title     : 'Inactive',
+      //   width     : 85,
+      //   height    : 25,
+      //   widget    : 'jqxButton',
+      // },
       custombutton: {
         icon      : 'fa-solid fa-fw fa-circle-question',
         // iconColor : '#000000',
@@ -1359,9 +1459,14 @@ class EnhanceDataGrid {
 
           $(this).keydown();
 
-          console.log('_excel');
-          // TODO: dev export Excel
-          // self.jqxGrid.jqxGrid('exportdata', 'xlsx', 'jqxGrid');
+          const button_id =
+            event.currentTarget.id.indexOf('#') == -1
+              ? '#' + event.currentTarget.id
+              : event.currentTarget.id;
+
+          const _filename = self.#_getGridButtonProps(tbElement, button_id, 'filename');
+
+          self.jqxGrid.jqxGrid('exportdata', 'xlsx', _filename ? _filename : 'EXCEL_FILE');
 
           $(this).keyup();
         },
@@ -1369,7 +1474,16 @@ class EnhanceDataGrid {
           event.preventDefault();
 
           $(this).keydown();
-          console.log('_csv');
+
+          const button_id =
+            event.currentTarget.id.indexOf('#') == -1
+              ? '#' + event.currentTarget.id
+              : event.currentTarget.id;
+
+          const _filename = self.#_getGridButtonProps(tbElement, button_id, 'filename');
+
+          self.jqxGrid.jqxGrid('exportdata', 'csv', _filename ? _filename : 'CSV_FILE');
+
           $(this).keyup();
         },
         _active: function(event) {
@@ -1908,8 +2022,8 @@ class EnhanceDataGrid {
   /**
    * Constructs EnhanceDataGrid object.
    *
-   * @todo Try to include following libraries for prettier UI experience.
-   * @todo [<b>Font Awesome (<i>Icon Dependency</i>)</b>]{@link https://fontawesome.com/} - https://fontawesome.com/
+   * @todo It is recommended to include following libraries for prettier UI experience.
+   * @todo [<b>Font Awesome</b>]{@link https://fontawesome.com/} - https://fontawesome.com/ <i>(Icon Dependency)</i>
    * @todo [<b>Bootstrap</b>]{@link https://getbootstrap.com/} - https://getbootstrap.com/
    * @todo [<b>jQuery-Confirm</b>]{@link https://craftpip.github.io/jquery-confirm/} - https://craftpip.github.io/jquery-confirm/
    *
@@ -2613,10 +2727,20 @@ class EnhanceDataGrid {
    * @example
    * // This method only support JSON type data source with URL as following:
    * const grid = new EnhanceDataGrid({
+   *   // using 'dataSource'
    *   dataSource: {
    *     datatype   : 'json',
    *     url        : 'source_url.php',
    *     id         : 'id',
+   *     datafields : [
+   *       { name: 'id', type: 'number' },
+   *       { name: 'name', type: 'string' },
+   *       ...
+   *     ],
+   *   },
+   *   // OR, using 'jsonSource'
+   *   jsonSource: {
+   *     url: 'source_url.php',
    *     datafields : [
    *       { name: 'id', type: 'number' },
    *       { name: 'name', type: 'string' },

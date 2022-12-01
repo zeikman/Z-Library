@@ -31,6 +31,15 @@ It is recommended to be use with the following libraries to have a prettier UI e
 Full [documentation](https://coming-soon.com) is over here.
 
 ```javascript
+// jsonSource comes with some predefined options
+const source_json_object = {
+  url: 'url.php',
+  datafields: [
+    { name: 'id', type: 'number' },
+    ...
+  ],
+};
+// standard jqxGrid source
 const source_url_object = {
   id: 'id',
   datafields: [
@@ -51,6 +60,7 @@ const grid = new EnhanceDataGrid({
   ...
   // EnhanceDataGrid properties
   id                  : '#grid_id',
+  jsonSource          : source_json_object,
   dataSource          : source_url_object,
   dataAdapter         : new $.jqx.dataAdapter(source_url_object), // same as jqxGrid's "source" property
   checkedDatafield    : 'checked',
@@ -84,73 +94,73 @@ const grid = new EnhanceDataGrid({
   <tbody>
     <tr>
       <td>id</td>
-      <td>{String}</td>
+      <td>String</td>
       <td>Grid's ID</td>
       <td></td>
     </tr>
     <tr>
       <td>dataSource</td>
-      <td>{String}</td>
+      <td>String</td>
       <td>Grid's data source, needed when dataAdapter not provided.</td>
       <td></td>
     </tr>
     <tr>
       <td>dataAdapter</td>
-      <td>{Object}</td>
+      <td>Object</td>
       <td>Grid's data adapter, needed when dataSource not provided.</td>
       <td></td>
     </tr>
     <tr>
       <td>checkedDatafield</td>
-      <td>{String}</td>
+      <td>String</td>
       <td>Data field which use to get all selected data ID.</td>
       <td>'selected'</td>
     </tr>
     <tr>
       <td>useBootstrap</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Enable/Disable Bootstrap Theme on Grid message.</td>
       <td>false</td>
     </tr>
     <tr>
       <td>searchBar</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Show search bar (in toolbar).</td>
       <td>false</td>
     </tr>
     <tr>
       <td>showFindButton</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Show 'Find' button (in toolbar).</td>
       <td>false</td>
     </tr>
     <tr>
       <td>showFilterButton</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Show 'Filter' button (in toolbar).</td>
       <td>true</td>
     </tr>
     <tr>
       <td>showAdvFilterButton</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Show 'Advanced Filter' button (in toolbar).</td>
       <td>true</td>
     </tr>
     <tr>
       <td>showRowIndex</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Show row index.</td>
       <td>true</td>
     </tr>
     <tr>
       <td>rowIndexWidth</td>
-      <td>{Boolean}</td>
+      <td>Boolean</td>
       <td>Row index width.</td>
       <td>50</td>
     </tr>
     <tr>
       <td>tbElement</td>
-      <td>{Object[ ]}</td>
+      <td>Object[]</td>
       <td>Grid's toolbar built-in component.
         <br />Button component: 'reload', 'add', 'edit', 'delete', 'print', 'excel', 'csv', 'custombutton', 'custom'
         <br />Other component: 'divider', 'separator'
