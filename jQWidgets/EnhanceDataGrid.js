@@ -495,14 +495,14 @@ class EnhanceDataGrid {
     'custBar',
     'dataAdapter',
     'dataSource',
-    'enterFilter',
-    'enterSearch',
+    'enterFilter', // TODO: enableFilter
+    'enterSearch', // TODO: enableSearch
     'jsonSource',
     'rowIndexWidth',
     'searchBar',
     'showAdvFilterButton',
-    'showFilterButton',
-    'showFindButton',
+    'showFilterButton', // TODO: enableFilter
+    'showFindButton', // TODO: enableSearch
     'showRowIndex',
     'statusBar',
     'tbElement',
@@ -533,14 +533,14 @@ class EnhanceDataGrid {
     custBar             : false,
     dataAdapter         : new $.jqx.dataAdapter(''),
     dataSource          : '',
-    enterFilter         : true,
-    enterSearch         : false,
+    enterFilter         : true, // TODO: enableFilter
+    enterSearch         : false, // TODO: enableSearch
     jsonSource          : null,
     rowIndexWidth       : 50,
     searchBar           : false,
     showAdvFilterButton : true,
-    showFilterButton    : true,
-    showFindButton      : false,
+    showFilterButton    : true, // TODO: enableFilter
+    showFindButton      : false, // TODO: enableSearch
     showRowIndex        : true,
     statusBar           : false,
     tbElement           : [],
@@ -634,7 +634,7 @@ class EnhanceDataGrid {
     this.#_dataAdapter = zProps.dataAdapter;
 
     if (EnhanceDataGrid.isUnset(props['source'])) {
-      // last priority
+      // TODO: last priority
       if (this.#_jsonSource && typeof this.#_jsonSource === 'object') {
         this.#_dataSource = {
           url       : this.#_jsonSource.url ? this.#_jsonSource.url : '',
@@ -665,11 +665,11 @@ class EnhanceDataGrid {
           };
       }
 
-      // second priority
+      // TODO: second priority
       if (this.#_dataSource)
         props['source'] = new $.jqx.dataAdapter(this.#_dataSource);
 
-      // first priority
+      // TODO: first priority
       if (this.#_dataAdapter)
         props['source'] = this.#_dataAdapter;
     }
@@ -844,6 +844,7 @@ class EnhanceDataGrid {
         let searchInputProp = {
           width: 200,
           height: 25,
+          placeHolder: 'Search/Filter Record'
         };
         let searchInputCSS = {
           margin: '0px 5px 0px 3px',
@@ -858,7 +859,8 @@ class EnhanceDataGrid {
           searchInputCSS.margin = '0px 5px 0px 0px';
         }
 
-        if (typeof zProps.enterFilter === 'boolean' && zProps.enterFilter) searchInputProp.placeHolder = 'Search: Press Enter to filter';
+        /* if (typeof zProps.enterFilter === 'boolean' && zProps.enterFilter)
+          searchInputProp.placeHolder = 'Search: Press Enter to filter'; */
 
         const searchInput =
           $(`<input id="${setId}_searchInput" type="text" />`)
@@ -879,48 +881,22 @@ class EnhanceDataGrid {
           //   }, 500));
         }
 
-        // NOTE: enter to search feature
-        if ((typeof zProps.enterSearch === 'boolean' && zProps.enterSearch)) {
-          // searchInput
-          //   .attr('placeholder', 'Press Enter to find')
-          //   .keydown(event => {
-          //     if (event.which === 13) { // NOTE: Enter keyCode
-          //       event.preventDefault();
-          //       self.#_highlight(searchInput);
-          //     }
-          //   });
-        }
-
-        // NOTE: enter to filter feature
+        // NOTE: enter to search(ctrlKey)/filter feature
         if ((typeof zProps.enterFilter === 'boolean' && zProps.enterFilter)) {
           searchInput
+            // .attr('placeholder', 'Search: Press Enter to filter')
             .keydown(event => {
               if (event.which === 13) { // NOTE: Enter keyCode
-                self.#_filterData($(event.target));
+                if (event.ctrlKey)
+                  findButton.trigger('click');
+                else
+                  filterButton.trigger('click');
               }
 
               if (event.which === 27) { // NOTE: ESC keyCode
-                clrFilterButton.trigger('click');
+                clearFilterButton.trigger('click');
               }
             });
-        }
-
-        // NOTE: show/hide 'Find' button
-        if (typeof zProps.showFindButton === 'boolean' && zProps.showFindButton) {
-          // var findButton = $('<button>');
-
-          // $('<i>').addClass('fas fa-search').css({ color: '#d63979' }).appendTo(findButton);
-
-          // // $('<span>').css({ marginLeft: 5 }).text('Find').appendTo(findButton); // CHANGE: hide find text
-          // findButton
-          //   .jqxButton({ theme: this.theme, width: 25, height: 25 })
-          //   .on('click', event => {
-          //     event.preventDefault();
-
-          //     self.#_highlight(searchInput);
-          //   });
-
-          // container.append(findButton);
         }
 
         let buttonCSS = {
@@ -930,10 +906,32 @@ class EnhanceDataGrid {
           height: 25
         };
 
+        // NOTE: show/hide 'Find' button
+        const findButton =
+          $('<button>')
+            .attr('title', 'Find (Ctrl + Enter)');
+
+        if (typeof zProps.showFindButton === 'boolean' && zProps.showFindButton) {
+          $('<i>')
+            .addClass('fa-solid fa-fw fa-search')
+            .appendTo(findButton);
+
+          // $('<span>').css({ marginLeft: 5 }).text('Find').appendTo(findButton); // CHANGE: hide find text
+          findButton
+            .jqxButton(buttonCSS)
+            .on('click', event => {
+              event.preventDefault();
+
+              self.#_highlightData(searchInput);
+            });
+
+          container.append(findButton);
+        }
+
         // NOTE: show/hide 'Filter' button
         const filterButton =
           $('<button>')
-            .attr('title', 'Filter');
+            .attr('title', 'Filter (Enter)');
 
         if (typeof zProps.showFilterButton === 'boolean' && zProps.showFilterButton) {
           $('<i>')
@@ -955,32 +953,33 @@ class EnhanceDataGrid {
         }
 
         // NOTE: 'Clear Filter' button
-        const clrFilterButton =
+        const clearFilterButton =
           $('<button>')
             .attr('title', 'Clear Filter');
 
         $('<i>')
           .attr('id', `${setId}_advancedFilterClear`)
           .addClass('fa-solid fa-fw fa-xmark')
-          .appendTo(clrFilterButton);
+          .appendTo(clearFilterButton);
 
-        clrFilterButton
+        clearFilterButton
           .jqxButton(buttonCSS)
           .on('click', event => {
             event.preventDefault();
 
-            $(gridId).jqxGrid('clearfilters');
+            self.jqxGrid.jqxGrid('clearfilters');
+            self.clearSelection();
 
             // TODO:: think about callback operation between single column filer and advanced filter
-            // if (!$(gridId).jqxGrid('showfilterrow'))
+            // if (!self.jqxGrid.jqxGrid('showfilterrow'))
               searchInput.val(null);
           });
 
-        container.append(clrFilterButton);
+        container.append(clearFilterButton);
 
         // NOTE: show/hide 'Advanced Filter' button
         if (typeof zProps.showAdvFilterButton === 'boolean' && zProps.showAdvFilterButton) {
-          const advFilterButton =
+          const advancedFilterButton =
             $('<button>')
               .attr({
                 id: `${setId}_advancedFilterBtn`,
@@ -992,40 +991,40 @@ class EnhanceDataGrid {
               .attr('id', `${setId}_advancedFilterArrowDown`)
               .addClass('fa-solid fa-fw fa-chevron-down')
               .hide()
-              .appendTo(advFilterButton);
+              .appendTo(advancedFilterButton);
 
             $('<i>')
               .attr('id', `${setId}_advancedFilterArrowUp`)
               .addClass('fa-solid fa-fw fa-chevron-up')
-              .appendTo(advFilterButton);
+              .appendTo(advancedFilterButton);
           } else {
             $('<i>')
               .attr('id', `${setId}_advancedFilterArrowDown`)
               .addClass('fa-solid fa-fw fa-chevron-down')
-              .appendTo(advFilterButton);
+              .appendTo(advancedFilterButton);
 
             $('<i>')
               .attr('id', `${setId}_advancedFilterArrowUp`)
               .addClass('fa-solid fa-fw fa-chevron-up')
               .hide()
-              .appendTo(advFilterButton);
+              .appendTo(advancedFilterButton);
           }
 
-          // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(advFilterButton);
-          advFilterButton
+          // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(advancedFilterButton);
+          advancedFilterButton
             .jqxButton(buttonCSS)
             .on('click', event => {
               event.preventDefault();
 
               $(`${gridId}_advancedFilterBtn`)
-                .attr('title', $(gridId).jqxGrid('showfilterrow') ? 'Show Advanced Filter' : 'Hide Advanced Filter');
+                .attr('title', self.jqxGrid.jqxGrid('showfilterrow') ? 'Show Advanced Filter' : 'Hide Advanced Filter');
 
-              $(gridId).jqxGrid({ showfilterrow: $(gridId).jqxGrid('showfilterrow') ? false : true });
+              self.jqxGrid.jqxGrid({ showfilterrow: self.jqxGrid.jqxGrid('showfilterrow') ? false : true });
 
               // NOTE: enable clear filter button & toggle arrow icon {down/up}
-              $(gridId).jqxGrid('clearfilters');
+              self.jqxGrid.jqxGrid('clearfilters');
 
-              if ($(gridId).jqxGrid('showfilterrow')) {
+              if (self.jqxGrid.jqxGrid('showfilterrow')) {
                 $(`${gridId}_advancedFilterArrowDown`).hide();
                 $(`${gridId}_advancedFilterArrowUp`).show();
               } else {
@@ -1034,7 +1033,7 @@ class EnhanceDataGrid {
               }
             });
 
-          container.append(advFilterButton);
+          container.append(advancedFilterButton);
         }
 
         // NOTE: Append field divider
@@ -1971,16 +1970,68 @@ class EnhanceDataGrid {
     });
 
     return obj;
-  }
+  } // end of #_getGridButtonProps
+
+  /** @private */
+  #_highlightData(searchInput) {
+    const sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
+
+    if (sortColumn) {
+      // var rows = $(self.id).jqxGrid('getboundrows');
+      // var rows = $(self.id).jqxGrid('getrows');
+      const rows = this.jqxGrid.jqxGrid('getdisplayrows');
+
+      const searchValue = searchInput.val().trim().toLowerCase();
+      const columnCellFormat = this.jqxGrid.jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
+      let highlightRowIndex = -1;
+      let visibleRowIndex = -1;
+
+      if (searchValue) { // valid input
+        let cellValue = '';
+
+        for (let i = 0; i < rows.length; i++) {
+          cellValue = rows[i][sortColumn];
+
+          // TODO: need define date-format
+          // NOTE: change date to readable value
+          /* if (columnCellFormat === constant.app.dateFormat) {
+            cellValue = libDate.dateToString(rows[i][sortColumn]);
+          } */
+
+          if (EnhanceDataGrid.isNull(rows[i][sortColumn])) continue;
+
+          const result = cellValue.toString().toLowerCase().search(searchValue);
+
+          if (result > -1) {
+            // highlightRowIndex = $(this.id).jqxGrid('getrowboundindexbyid', rows[i].id);
+            highlightRowIndex = this.jqxGrid.jqxGrid('getrowboundindex', i);
+            visibleRowIndex = i;
+            break;
+          }
+        }
+      }
+
+      // NOTE: highlight & scroll to the row
+      if (highlightRowIndex > -1) {
+        this.jqxGrid.jqxGrid('selectrow', highlightRowIndex);
+        this.jqxGrid.jqxGrid('ensurerowvisible', visibleRowIndex);
+      } else {
+        this.clearSelection();
+      }
+    } else {
+      this.#_alert('<b>Find Data Warning</b> : Please perform column sorting to select search field.');
+
+      return false;
+    }
+  } // end of #_highlightData
 
   /** @private */
   #_filterData(searchInput, clearInput = false) {
     // NOTE: Filter search
-    const gridId = this.#_id;
-    const sortColumn = $(gridId).jqxGrid('getsortcolumn');
+    const sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
 
     if (sortColumn) {
-      const columnCellFormat = $(gridId).jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
+      const columnCellFormat = this.jqxGrid.jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
       const filtergroup = new $.jqx.filter();
       const filter_or_operator = 1;
       let filtervalue = searchInput.val().trim();
@@ -2002,17 +2053,18 @@ class EnhanceDataGrid {
         //   filtergroup.addfilter(filter_or_operator, filterDate);
         // }
 
-        $(gridId).jqxGrid('addfilter', sortColumn, filtergroup);
-        $(gridId).jqxGrid('applyfilters');
+        this.jqxGrid.jqxGrid('addfilter', sortColumn, filtergroup);
+        this.jqxGrid.jqxGrid('applyfilters');
       } else {
-        $(gridId).jqxGrid('clearfilters');
+        this.jqxGrid.jqxGrid('clearfilters');
       }
 
       return true;
     } else {
-      this.#_alert('<b>Filter Warning</b> : Please perform column sorting to select filter field.');
+      this.#_alert('<b>Filter Data Warning</b> : Please perform column sorting to select filter field.');
 
-      if (typeof clearInput === 'boolean' && clearInput) searchInput.val('');
+      if (typeof clearInput === 'boolean' && clearInput)
+        searchInput.val('');
 
       return false;
     }
