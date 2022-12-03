@@ -1,7 +1,7 @@
 # Z-Library
 jQWidgets/EnhanceDataGrid.js
 
-## EnhanceDataGrid.js
+## EnhanceDataGrid.js (Beta v1.0.0)
 
 EnhanceDataGrid is a library that extend [jQWidgets](https://www.jqwidgets.com/) jqxGrid widget and provides a lot of useful built-in methods and functionalities.
 
@@ -65,10 +65,7 @@ const grid = new EnhanceDataGrid({
   dataAdapter         : new $.jqx.dataAdapter(source_url_object), // same as jqxGrid's "source" property
   checkedDatafield    : 'checked',
   useBootstrap        : true,
-  searchBar           : true,
-  showFindButton      : false,
-  showFilterButton    : false,
-  showAdvFilterButton : false,
+  searchInput         : true,
   showRowIndex        : false,
   rowIndexWidth       : 100,
   tbElement           : [
@@ -99,6 +96,12 @@ const grid = new EnhanceDataGrid({
       <td></td>
     </tr>
     <tr>
+      <td>jsonSource</td>
+      <td>String</td>
+      <td>Grid's data source, same as dataSource with predefined options : { datatype:'json', id:'id', cache:false }.</td>
+      <td></td>
+    </tr>
+    <tr>
       <td>dataSource</td>
       <td>String</td>
       <td>Grid's data source, needed when dataAdapter not provided.</td>
@@ -123,7 +126,7 @@ const grid = new EnhanceDataGrid({
       <td>false</td>
     </tr>
     <tr>
-      <td>searchBar</td>
+      <td>searchInput</td>
       <td>Boolean</td>
       <td>Show search bar (in toolbar).</td>
       <td>false</td>
@@ -141,10 +144,40 @@ const grid = new EnhanceDataGrid({
       <td>true</td>
     </tr>
     <tr>
-      <td>showAdvFilterButton</td>
+      <td>showFilterRowButton</td>
       <td>Boolean</td>
-      <td>Show 'Advanced Filter' button (in toolbar).</td>
+      <td>Show 'Filter Row' toggle button (in toolbar).</td>
       <td>true</td>
+    </tr>
+    <tr>
+      <td>autoFilter</td>
+      <td>Boolean</td>
+      <td>Auto filter after certain timing delay.</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>autoFind</td>
+      <td>Boolean</td>
+      <td>Auto find after certain timing delay.</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>autoDelayTiming</td>
+      <td>Boolean</td>
+      <td>Timing delay for autoFilter/autoFind.</td>
+      <td>300 (miliseconds)</td>
+    </tr>
+    <tr>
+      <td>enterFilter</td>
+      <td>Boolean</td>
+      <td>Keyboard shortcut Filter (Enter key).</td>
+      <td>true</td>
+    </tr>
+    <tr>
+      <td>enterFind</td>
+      <td>Boolean</td>
+      <td>Keyboard shortcut Find (Ctrl+Enter key).</td>
+      <td>false</td>
     </tr>
     <tr>
       <td>showRowIndex</td>

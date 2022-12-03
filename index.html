@@ -486,10 +486,10 @@
         var columns = [
           { text: 'Name', datafield: 'firstname', width: 120, editable: false },
           { text: 'Last Name', datafield: 'lastname', width: 120, editable: false },
-          { text: 'Product', datafield: 'productname', width: 180, editable: false },
+          { text: 'Product', datafield: 'productname', minWidth: 180, editable: false },
           { text: 'Quantity', datafield: 'quantity', width: 80, align: 'right', cellsalign: 'right', editable: false },
-          { text: 'Unit Price', datafield: 'price', width: 90, cellsalign: 'right', cellsformat: 'c2', editable: false },
-          { text: 'Total', datafield: 'total', minWidth: 90, cellsalign: 'right', cellsformat: 'c2', editable: false },
+          { text: 'Unit Price', datafield: 'price', width: 90, align: 'right', cellsalign: 'right', cellsformat: 'c2', editable: false },
+          { text: 'Total', datafield: 'total', width: 90, align: 'right', cellsalign: 'right', cellsformat: 'c2', editable: false },
           { text: 'Check', datafield: 'selected', width: 50, columntype: 'checkbox' },
         ];
 
@@ -498,9 +498,10 @@
         console.log('%c >> test 1 - normal syntax', 'color: red; font-size: 14px; font-weight: bold;');
         grid = new EnhanceDataGrid({
           id: '#grid',
-          searchBar: true,
+          searchInput: true,
           editable: true,
           showFindButton: true,
+          enterFind: true,
           // Deep copy array
           // https://www.freecodecamp.org/news/how-to-clone-an-array-in-javascript-1d3183468f6a/
           // Deep copy object
@@ -576,8 +577,14 @@
           id: '#grid2',
           width: '80%',
           height: 300,
-          // useBootstrap: true,
-          showfilterrow: true,
+          useBootstrap: true,
+          searchInput: true,
+          enterFind: true,
+          enterFilter: false,
+          // autoFind: true,
+          autoFilter: true,
+          autoDelayTiming: 300,
+          // showfilterrow: true,
           columns: JSON.parse(JSON.stringify(columns)),
           // source: dataAdapter,
           source: new $.jqx.dataAdapter(source),
@@ -627,14 +634,18 @@
           width: '80%',
           useBootstrap: true,
           centeredColumns: true,
-          searchBar: true,
+          searchInput: true,
           showFilterButton: false,
-          showAdvFilterButton: false,
+          showFilterRowButton: false,
+          // autoFind: true,
           rowIndexWidth: 60,
           columns: JSON.parse(JSON.stringify(columns)),
           // source: dataAdapter,
-          // source: new $.jqx.dataAdapter(source),
+          //*/
+          source: new $.jqx.dataAdapter(source),
+          /*/
           source: new $.jqx.dataAdapter(''),
+          //*/
           // TODO: need testing for new syntax
           tbElement: [
             { button: 'reload' },

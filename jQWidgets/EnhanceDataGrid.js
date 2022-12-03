@@ -487,24 +487,24 @@ class EnhanceDataGrid {
 
   /** @private */
   #_zproplist = [
-    'autoSearch',
+    'autoFilter',
+    'autoFind',
+    'autoDelayTiming',
     'bootstrap',
     'buttonTheme',
     'centeredColumns',
     'checkedDatafield',
-    'custBar',
     'dataAdapter',
     'dataSource',
-    'enterFilter', // TODO: enableFilter
-    'enterSearch', // TODO: enableSearch
+    'enterFilter',
+    'enterFind',
     'jsonSource',
     'rowIndexWidth',
-    'searchBar',
-    'showAdvFilterButton',
-    'showFilterButton', // TODO: enableFilter
-    'showFindButton', // TODO: enableSearch
+    'searchInput',
+    'showFilterButton',
+    'showFilterRowButton',
+    'showFindButton',
     'showRowIndex',
-    'statusBar',
     'tbElement',
     'useBootstrap',
   ];
@@ -524,25 +524,25 @@ class EnhanceDataGrid {
     enabletooltips      : true,
     showaggregates      : true,
     showstatusbar       : true,
-    // EnhanceDataGrid properties
-    autoSearch          : false,
+    // EnhanceDataGrid default properties
+    autoFilter          : false,
+    autoFind            : false,
+    autoDelayTiming     : 300, // milisecond
     bootstrap           : false,
     buttonTheme         : 'material',
     centeredColumns     : false,
     checkedDatafield    : 'selected',
-    custBar             : false,
     dataAdapter         : new $.jqx.dataAdapter(''),
     dataSource          : '',
-    enterFilter         : true, // TODO: enableFilter
-    enterSearch         : false, // TODO: enableSearch
+    enterFilter         : true,
+    enterFind           : false,
     jsonSource          : null,
     rowIndexWidth       : 50,
-    searchBar           : false,
-    showAdvFilterButton : true,
-    showFilterButton    : true, // TODO: enableFilter
-    showFindButton      : false, // TODO: enableSearch
+    searchInput         : false,
+    showFilterButton    : true,
+    showFilterRowButton : true,
+    showFindButton      : false,
     showRowIndex        : true,
-    statusBar           : false,
     tbElement           : [],
     useBootstrap        : false, // TODO: think about the controlling of this flag, use Bootstrap theme ? function ?
   };
@@ -623,7 +623,7 @@ class EnhanceDataGrid {
 
     const tbElement     = zProps.tbElement;
     const hasTbElement  = tbElement.length > 0;
-    const showSearchBar = typeof zProps.searchBar === 'boolean' && zProps.searchBar;
+    const showSearchBar = typeof zProps.searchInput === 'boolean' && zProps.searchInput;
 
     // show toolbar
     if (hasTbElement || showSearchBar) props.showtoolbar = true;
@@ -838,13 +838,37 @@ class EnhanceDataGrid {
       toolbar.append(container);
 
       // NOTE: display search bar if set
-      if (typeof zProps.searchBar === 'boolean' && zProps.searchBar) {
+      if (typeof zProps.searchInput === 'boolean' && zProps.searchInput) {
+        const enterKeyFind = typeof zProps.enterFind === 'boolean' && zProps.enterFind;
+        const enterKeyFilter = typeof zProps.enterFilter === 'boolean' && zProps.enterFilter;
+        const isAutoFind = typeof zProps.autoFind === 'boolean' && zProps.autoFind;
+        const isAutoFilter = typeof zProps.autoFilter === 'boolean' && zProps.autoFilter;
+
+        let searchPlaceHolder = '';
+
+        if (enterKeyFind)
+          searchPlaceHolder = 'Find Record';
+
+        if (enterKeyFilter)
+          searchPlaceHolder = 'Filter Record';
+
+        if (enterKeyFind && enterKeyFilter)
+          searchPlaceHolder = 'Find/Filter Record';
+
+        if (isAutoFind)
+          searchPlaceHolder = 'Auto Find Record';
+
+        if (isAutoFilter)
+          searchPlaceHolder = 'Auto Filter Record';
+
+        if (isAutoFind && isAutoFilter)
+          searchPlaceHolder = 'Error';
 
         // add search input
         let searchInputProp = {
           width: 200,
           height: 25,
-          placeHolder: 'Search/Filter Record'
+          placeHolder: searchPlaceHolder,
         };
         let searchInputCSS = {
           margin: '0px 5px 0px 3px',
@@ -854,13 +878,13 @@ class EnhanceDataGrid {
 
         if ((typeof zProps.showFindButton === 'boolean' && zProps.showFindButton)
           || (typeof zProps.showFilterButton === 'boolean' && zProps.showFilterButton)
-          || (typeof zProps.showAdvFilterButton === 'boolean' && zProps.showAdvFilterButton)
+          || (typeof zProps.showFilterRowButton === 'boolean' && zProps.showFilterRowButton)
         ) {
           searchInputCSS.margin = '0px 5px 0px 0px';
         }
 
         /* if (typeof zProps.enterFilter === 'boolean' && zProps.enterFilter)
-          searchInputProp.placeHolder = 'Search: Press Enter to filter'; */
+          searchInputProp.placeHolder = 'Find: Press Enter to filter'; */
 
         const searchInput =
           $(`<input id="${setId}_searchInput" type="text" />`)
@@ -869,87 +893,130 @@ class EnhanceDataGrid {
 
         container.append(searchInput);
 
-        // NOTE: auto search feature
-        if ((typeof zProps.autoSearch === 'boolean' && zProps.autoSearch)) {
-          // searchInput
-          //   .attr('placeholder', 'Auto searching')
-          //   .keyup(EnhanceDataGrid.debounce(event => {
-          //     if (this.value.trim() || EnhanceDataGrid.isValidKeyboardInput(event)) {
-          //       event.preventDefault();
-          //       self.#_filterData($(event.target), true);
-          //     }
-          //   }, 500));
-        }
-
-        // NOTE: enter to search(ctrlKey)/filter feature
-        if ((typeof zProps.enterFilter === 'boolean' && zProps.enterFilter)) {
-          searchInput
-            // .attr('placeholder', 'Search: Press Enter to filter')
-            .keydown(event => {
-              if (event.which === 13) { // NOTE: Enter keyCode
-                if (event.ctrlKey)
-                  findButton.trigger('click');
-                else
-                  filterButton.trigger('click');
-              }
-
-              if (event.which === 27) { // NOTE: ESC keyCode
-                clearFilterButton.trigger('click');
-              }
-            });
-        }
-
-        let buttonCSS = {
+        let searchRelatedButtonCSS = {
           // theme: props.theme,
           // theme: 'material-purple',
           theme: zProps.buttonTheme,
           height: 25
         };
 
-        // NOTE: show/hide 'Find' button
-        const findButton =
-          $('<button>')
-            .attr('title', 'Find (Ctrl + Enter)');
-
-        if (typeof zProps.showFindButton === 'boolean' && zProps.showFindButton) {
-          $('<i>')
-            .addClass('fa-solid fa-fw fa-search')
-            .appendTo(findButton);
-
-          // $('<span>').css({ marginLeft: 5 }).text('Find').appendTo(findButton); // CHANGE: hide find text
-          findButton
-            .jqxButton(buttonCSS)
-            .on('click', event => {
-              event.preventDefault();
-
-              self.#_highlightData(searchInput);
+        // NOTE: auto find data feature
+        // auto find will disabled Enter Find/Filter feature
+        if (isAutoFind || isAutoFilter) {
+          if (isAutoFind && isAutoFilter) {
+            this.#_alert({
+              columnClass : 'medium',
+              title       : '<b>Setting Error</b>',
+              content     : 'You can either set autoFind:true or autoFilter:true but not both.'
             });
 
-          container.append(findButton);
-        }
+            return false;
+          }
 
-        // NOTE: show/hide 'Filter' button
-        const filterButton =
-          $('<button>')
-            .attr('title', 'Filter (Enter)');
-
-        if (typeof zProps.showFilterButton === 'boolean' && zProps.showFilterButton) {
-          $('<i>')
-            .addClass('fa-solid fa-fw fa-filter')
-            .appendTo(filterButton);
-
-          // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(filterButton); // CHANGE: hide filter text
-          filterButton
-            .jqxButton(buttonCSS)
-            .on('click', event => {
+          /*/
+          const delaySearch = EnhanceDataGrid.debounce(function(event) {
+            if (this.value.trim() || EnhanceDataGrid.isValidKeyboardInput(event)) {
               event.preventDefault();
 
-              if (self.#_filterData(searchInput)) {
-                // NOTE: can provide after filtered callback
+              if (isAutoFind)
+                self.#_highlightData($(event.target), true);
+
+              if (isAutoFilter)
+                self.#_filterData($(event.target), true);
+            }
+          }, 500);
+
+          searchInput
+            .keyup(delaySearch);
+          /*/
+          const delaySearch = EnhanceDataGrid.debounce(function(event) {
+            if (searchInput.val().trim() || EnhanceDataGrid.isValidKeyboardInput(event)) {
+              event.preventDefault();
+
+              if (isAutoFind)
+                self.#_highlightData(searchInput, true);
+
+              if (isAutoFilter)
+                self.#_filterData(searchInput, true);
+            }
+          }, zProps.autoDelayTiming);
+
+          searchInput
+            .keyup(event => {
+              delaySearch(event);
+
+              if (event.which === 27) { // NOTE: ESC keyCode
+                clearFilterButton.trigger('click');
+              }
+            });
+          //*/
+        } else {
+          // NOTE: Enter to search(+ CtrlKey)/filter feature
+          // TODO: provide user-defined onclick feature
+          searchInput
+            .keydown(event => {
+              if (event.which === 13) { // NOTE: Enter keyCode
+                if (event.ctrlKey) {
+                  if (typeof zProps.enterFind === 'boolean' && zProps.enterFind)
+                    self.#_highlightData(searchInput); // findButton.trigger('click'); // NOTE: isolate keyboard & button relation
+                } else {
+                  if (typeof zProps.enterFilter === 'boolean' && zProps.enterFilter)
+                    self.#_filterData(searchInput)  // filterButton.trigger('click'); // NOTE: isolate keyboard & button relation
+                }
+              }
+
+              if (event.which === 27) { // NOTE: ESC keyCode
+                clearFilterButton.trigger('click');
               }
             });
 
-          container.append(filterButton);
+          // NOTE: show/hide 'Find' button
+          const findButton =
+            $('<button>')
+              .attr('title', 'Find (Ctrl+Enter)');
+
+          if (typeof zProps.showFindButton === 'boolean' && zProps.showFindButton) {
+            $('<i>')
+              .addClass('fa-solid fa-fw fa-search')
+              .appendTo(findButton);
+
+            // $('<span>').css({ marginLeft: 5 }).text('Find').appendTo(findButton); // CHANGE: hide find text
+            findButton
+              .jqxButton(searchRelatedButtonCSS)
+              .on('click', event => {
+                event.preventDefault();
+
+                if (self.#_highlightData(searchInput)) {
+                  // NOTE: can provide after find callback
+                }
+              });
+
+            container.append(findButton);
+          }
+
+          // NOTE: show/hide 'Filter' button
+          const filterButton =
+            $('<button>')
+              .attr('title', 'Filter (Enter)');
+
+          if (typeof zProps.showFilterButton === 'boolean' && zProps.showFilterButton) {
+            $('<i>')
+              .addClass('fa-solid fa-fw fa-filter')
+              .appendTo(filterButton);
+
+            // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(filterButton); // CHANGE: hide filter text
+            filterButton
+              .jqxButton(searchRelatedButtonCSS)
+              .on('click', event => {
+                event.preventDefault();
+
+                if (self.#_filterData(searchInput)) {
+                  // NOTE: can provide after filter callback
+                }
+              });
+
+            container.append(filterButton);
+          }
         }
 
         // NOTE: 'Clear Filter' button
@@ -963,7 +1030,7 @@ class EnhanceDataGrid {
           .appendTo(clearFilterButton);
 
         clearFilterButton
-          .jqxButton(buttonCSS)
+          .jqxButton(searchRelatedButtonCSS)
           .on('click', event => {
             event.preventDefault();
 
@@ -977,13 +1044,13 @@ class EnhanceDataGrid {
 
         container.append(clearFilterButton);
 
-        // NOTE: show/hide 'Advanced Filter' button
-        if (typeof zProps.showAdvFilterButton === 'boolean' && zProps.showAdvFilterButton) {
+        // NOTE: show/hide 'Filter Row' button
+        if (typeof zProps.showFilterRowButton === 'boolean' && zProps.showFilterRowButton) {
           const advancedFilterButton =
             $('<button>')
               .attr({
                 id: `${setId}_advancedFilterBtn`,
-                title: 'Show Advanced Filter'
+                title: 'Show Filter Row'
               });
 
           if (typeof props.showfilterrow === 'boolean' && props.showfilterrow) {
@@ -1012,14 +1079,14 @@ class EnhanceDataGrid {
 
           // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(advancedFilterButton);
           advancedFilterButton
-            .jqxButton(buttonCSS)
+            .jqxButton(searchRelatedButtonCSS)
             .on('click', event => {
               event.preventDefault();
 
               $(`${gridId}_advancedFilterBtn`)
-                .attr('title', self.jqxGrid.jqxGrid('showfilterrow') ? 'Show Advanced Filter' : 'Hide Advanced Filter');
+                .attr('title', self.jqxGrid.jqxGrid('showfilterrow') ? 'Show Filter Row' : 'Hide Filter Row');
 
-              self.jqxGrid.jqxGrid({ showfilterrow: self.jqxGrid.jqxGrid('showfilterrow') ? false : true });
+              self.jqxGrid.jqxGrid({ showfilterrow: !self.jqxGrid.jqxGrid('showfilterrow') });
 
               // NOTE: enable clear filter button & toggle arrow icon {down/up}
               self.jqxGrid.jqxGrid('clearfilters');
@@ -1973,7 +2040,8 @@ class EnhanceDataGrid {
   } // end of #_getGridButtonProps
 
   /** @private */
-  #_highlightData(searchInput) {
+  // TODO: need cover new syntax
+  #_highlightData(searchInput, clearInputWhenError = false) {
     const sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
 
     if (sortColumn) {
@@ -2018,15 +2086,25 @@ class EnhanceDataGrid {
       } else {
         this.clearSelection();
       }
+
+      return true;
     } else {
-      this.#_alert('<b>Find Data Warning</b> : Please perform column sorting to select search field.');
+      this.#_alert({
+        columnClass : 'medium',
+        title       : '<b>Find Data Warning</b>',
+        content     : 'Please perform column sorting to select search field.'
+      });
+
+      if (typeof clearInputWhenError === 'boolean' && clearInputWhenError)
+        searchInput.val('');
 
       return false;
     }
   } // end of #_highlightData
 
   /** @private */
-  #_filterData(searchInput, clearInput = false) {
+  // TODO: need cover new syntax
+  #_filterData(searchInput, clearInputWhenError = false) {
     // NOTE: Filter search
     const sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
 
@@ -2061,9 +2139,13 @@ class EnhanceDataGrid {
 
       return true;
     } else {
-      this.#_alert('<b>Filter Data Warning</b> : Please perform column sorting to select filter field.');
+      this.#_alert({
+        columnClass : 'medium',
+        title       : '<b>Filter Data Warning</b>',
+        content     : 'Please perform column sorting to select filter field.'
+      });
 
-      if (typeof clearInput === 'boolean' && clearInput)
+      if (typeof clearInputWhenError === 'boolean' && clearInputWhenError)
         searchInput.val('');
 
       return false;
@@ -2086,11 +2168,11 @@ class EnhanceDataGrid {
    * @param {Object}          [prop.dataAdapter]                  - Grid's data adapter, needed when dataSource not provided.
    * @param {String}          [prop.checkedDatafield='selected']  - Data field which use to get all selected data ID.
    * @param {Boolean}         [prop.useBootstrap=false]           - Enable/Disable Bootstrap Theme on Grid message.
-   * @param {Boolean}         [prop.searchBar=false]              - Show search bar (in toolbar).
+   * @param {Boolean}         [prop.searchInput=false]            - Show search bar (in toolbar).
    *
    * @param {Boolean}         [prop.showFindButton=false]         - Show 'Find' button (in toolbar).
    * @param {Boolean}         [prop.showFilterButton=true]        - Show 'Filter' button (in toolbar).
-   * @param {Boolean}         [prop.showAdvFilterButton=true]     - Show 'Advanced Filter' button (in toolbar).
+   * @param {Boolean}         [prop.showFilterRowButton=true]     - Show 'Filter Row' toggle button (in toolbar).
    * @param {Boolean}         [prop.showRowIndex=true]            - Show row index.
    * @param {Boolean}         [prop.rowIndexWidth=50]             - Row index width.
    * @param {Object[]}        [prop.tbElement=[ ]]                - Grid's toolbar built-in component, see "<code>tbElement.</code>" parameter for component properties.
@@ -2184,17 +2266,17 @@ class EnhanceDataGrid {
      * EnhanceDataGrid properties.
      *
      * @example
-     * // normal syntax
+     * // default syntax
      * new EnhanceDataGrid({
      *   id                 : '#grid_id',
      *   dataSource         : {source_url_object}, // Refer to updateSourceUrl() method for example
      *   dataAdapter        : new $.jqx.dataAdapter({source_url_object}),
      *   checkedDatafield   : 'checked',
      *   useBootstrap       : true,
-     *   searchBar          : true,
+     *   searchInput        : true,
      *   showFindButton     : false,
      *   showFilterButton   : false,
-     *   showAdvFilterButton: false,
+     *   showFilterRowButton: false,
      *   showRowIndex       : false,
      *   rowIndexWidth      : 100,
      *   tbElement          : [
