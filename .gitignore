@@ -1,6 +1,6 @@
-/jqwidgets-*
-/jquery-*
-/bootstrap-*
+/jqwidgets*
+/jquery*
+/bootstrap*
 *-old*
 *-backup*
 *documentation*

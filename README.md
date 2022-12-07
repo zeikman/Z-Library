@@ -1,9 +1,9 @@
 # Z-Library
-jQWidgets/EnhanceDataGrid.js
+EnhanceDataGrid/EnhanceDataGrid.js
 
-## EnhanceDataGrid.js (Beta v1.0.0)
+## EnhanceDataGrid.js (Beta v0.2.0)
 
-EnhanceDataGrid is a library that extend [jQWidgets](https://www.jqwidgets.com/) jqxGrid widget and provides a lot of useful built-in methods and functionalities.
+EnhanceDataGrid is a library that extend [jQWidgets](https://www.jqwidgets.com/) [jqxGrid](https://www.jqwidgets.com/jquery-widgets-demo/demos/jqxgrid/index.htm) widget and provides a lot of useful built-in methods and functionalities.
 
 ## Get Started
 
@@ -11,14 +11,14 @@ Include EnhanceDataGrid library after jqxGrid library.
 
 ```sh
 <link rel="stylesheet" href="path-to-jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css" />
-<script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxgrid.js"></script>
-<!-- All jqxgrid related libraries and other necessary dependency libraries -->
+<script type="text/javascript" src="path-to-jqwidgets/jqwidgets/jqxgrid.js"></script>
+<!-- ## Remember to include all jqxgrid related libraries and other necessary dependency libraries ## -->
 
-<link rel="stylesheet" href="jQWidgets/EnhanceDataGrid.css" type="text/css" />
-<script type="text/javascript" src="jQWidgets/EnhanceDataGrid.js"></script>
+<link rel="stylesheet" href="path-to-EnhanceDataGrid/EnhanceDataGrid.css" type="text/css" />
+<script type="text/javascript" src="path-to-EnhanceDataGrid/EnhanceDataGrid.js"></script>
 ```
 
-It is recommended to be use with the following libraries to have a prettier UI experience.
+It is recommended to use with the following libraries to have a prettier UI experience.
 
 [Font-Awesome](https://fontawesome.com/) - Default icon library. (Current version: 6.2.1)
 
@@ -28,10 +28,10 @@ It is recommended to be use with the following libraries to have a prettier UI e
 
 ### How to use
 
-Full [documentation](https://coming-soon.com) is over here.
+Full [documentation](https://www.rightpristine.com/zeikman/EnhanceDataGrid/documentation/) is over here.
 
 ```javascript
-// jsonSource comes with some predefined options
+// jsonSource comes with some preset options
 const source_json_object = {
   url: 'url.php',
   datafields: [
@@ -98,7 +98,7 @@ const grid = new EnhanceDataGrid({
     <tr>
       <td>jsonSource</td>
       <td>String</td>
-      <td>Grid's data source, same as dataSource with predefined options : { datatype:'json', id:'id', cache:false }.</td>
+      <td>Grid's data source, same as dataSource with preset options : { datatype:'json', id:'id', cache:false }.</td>
       <td></td>
     </tr>
     <tr>
@@ -113,6 +113,12 @@ const grid = new EnhanceDataGrid({
       <td>Grid's data adapter, needed when dataSource not provided.</td>
       <td></td>
     </tr>
+    <!-- <tr>
+      <td>dateFormat</td>
+      <td>String</td>
+      <td>Date format applied when filtering data in a 'date' column.</td>
+      <td>''</td>
+    </tr> -->
     <tr>
       <td>checkedDatafield</td>
       <td>String</td>
@@ -120,10 +126,34 @@ const grid = new EnhanceDataGrid({
       <td>'selected'</td>
     </tr>
     <tr>
+      <td>buttonTheme</td>
+      <td>String</td>
+      <td>Default theme for built-in button component.</td>
+      <td>''</td>
+    </tr>
+    <tr>
       <td>useBootstrap</td>
       <td>Boolean</td>
       <td>Enable/Disable Bootstrap Theme on Grid message.</td>
       <td>false</td>
+    </tr>
+    <tr>
+      <td>centeredColumns</td>
+      <td>Boolean</td>
+      <td>Sets True to auto append { align: 'center' } to all columns.</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>showRowIndex</td>
+      <td>Boolean</td>
+      <td>Show row index.</td>
+      <td>true</td>
+    </tr>
+    <tr>
+      <td>rowIndexWidth</td>
+      <td>Number</td>
+      <td>Row index width.</td>
+      <td>50</td>
     </tr>
     <tr>
       <td>searchInput</td>
@@ -150,6 +180,18 @@ const grid = new EnhanceDataGrid({
       <td>true</td>
     </tr>
     <tr>
+      <td>enterFilter</td>
+      <td>Boolean</td>
+      <td>Keyboard shortcut Filter (Enter key).</td>
+      <td>true</td>
+    </tr>
+    <tr>
+      <td>enterFind</td>
+      <td>Boolean</td>
+      <td>Keyboard shortcut Find (Ctrl+Enter key).</td>
+      <td>false</td>
+    </tr>
+    <tr>
       <td>autoFilter</td>
       <td>Boolean</td>
       <td>Auto filter after certain timing delay.</td>
@@ -163,33 +205,9 @@ const grid = new EnhanceDataGrid({
     </tr>
     <tr>
       <td>autoDelayTiming</td>
-      <td>Boolean</td>
+      <td>Number</td>
       <td>Timing delay for autoFilter/autoFind.</td>
-      <td>300 (miliseconds)</td>
-    </tr>
-    <tr>
-      <td>enterFilter</td>
-      <td>Boolean</td>
-      <td>Keyboard shortcut Filter (Enter key).</td>
-      <td>true</td>
-    </tr>
-    <tr>
-      <td>enterFind</td>
-      <td>Boolean</td>
-      <td>Keyboard shortcut Find (Ctrl+Enter key).</td>
-      <td>false</td>
-    </tr>
-    <tr>
-      <td>showRowIndex</td>
-      <td>Boolean</td>
-      <td>Show row index.</td>
-      <td>true</td>
-    </tr>
-    <tr>
-      <td>rowIndexWidth</td>
-      <td>Boolean</td>
-      <td>Row index width.</td>
-      <td>50</td>
+      <td>300 (in miliseconds)</td>
     </tr>
     <tr>
       <td>tbElement</td>

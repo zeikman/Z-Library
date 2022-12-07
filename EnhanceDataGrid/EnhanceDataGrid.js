@@ -4,10 +4,29 @@
 
 // NOTE: Develop with following libraries ========== ========== ========== ========== ========== ========== ========== ==========
 {/*
-  <!-- jQuery v1.11.1 ->
+  <!-- jQuery v1.11.1 -->
   <script type="text/javascript" src="jqwidgets-ver14.0.0/scripts/jquery-1.11.1.min.js"></script>
 
-  <!-- jQWidget v14.0.0 ->
+  <!-- JSZIP - https://stuk.github.io/jszip/, needed for jqxGrid Export -->
+  <script type="text/javascript" src="jszip-v3.10.1/dist/jszip.min.js"></script>
+
+  <!-- Font Awesome v6.2.1 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"
+    integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+
+  <!-- Bootstrap v5.2.3 -->
+  <link rel="stylesheet" href="bootstrap-5.2.3/css/bootstrap.min.css" type="text/css" />
+  <script type="text/javascript" src="bootstrap-5.2.3/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jQuery-Confirm v3.3.4 -->
+  <link rel="stylesheet" href="jquery-confirm-v3.3.4/dist/jquery-confirm.min.css" type="text/css" />
+  <script type="text/javascript" src="jquery-confirm-v3.3.4/dist/jquery-confirm.min.js"></script>
+
+  <!-- jQWidget v14.0.0 -->
+  <link rel="stylesheet" href="jqwidgets-ver14.0.0/jqwidgets/styles/jqx.base.css" type="text/css" />
+  <link rel="stylesheet" href="jqwidgets-ver14.0.0/jqwidgets/styles/jqx.material.css" type="text/css" />
   <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxcore.js"></script>
   <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxbuttons.js"></script>
   <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxinput.js"></script>
@@ -34,20 +53,9 @@
   <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxdata.export.js"></script>
   <script type="text/javascript" src="jqwidgets-ver14.0.0/jqwidgets/jqxexport.js"></script>
 
-  <!-- JSZIP - https://stuk.github.io/jszip/, needed for jqxGrid Export -->
-  <script type="text/javascript" src="jszip-v3.10.1/dist/jszip.min.js"></script>
-
-  <!-- Font Awesome v6.2.1 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js"
-    integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"></script>
-
-  <!-- Bootstrap v5.2.3 -->
-  <script type="text/javascript" src="bootstrap-5.2.3/js/bootstrap.bundle.js"></script>
-
-  <!-- jQuery-Confirm v3.3.4 -->
-  <script type="text/javascript" src="jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
+  <!-- EnhanceDataGrid -->
+  <link rel="stylesheet" href="jQWidgets/EnhanceDataGrid.css" type="text/css" />
+  <script type="text/javascript" src="jQWidgets/EnhanceDataGrid.js"></script>
 */}
 
 // NOTE: expand jQuery functions ========== ========== ========== ========== ========== ========== ========== ==========
@@ -496,6 +504,7 @@ class EnhanceDataGrid {
     'checkedDatafield',
     'dataAdapter',
     'dataSource',
+    'dateFormat',
     'enterFilter',
     'enterFind',
     'jsonSource',
@@ -529,11 +538,13 @@ class EnhanceDataGrid {
     autoFind            : false,
     autoDelayTiming     : 300, // milisecond
     bootstrap           : false,
-    buttonTheme         : 'material',
+    buttonTheme         : '',
+    // buttonTheme         : 'material-purple',
     centeredColumns     : false,
     checkedDatafield    : 'selected',
-    dataAdapter         : new $.jqx.dataAdapter(''),
+    dataAdapter         : '', // new $.jqx.dataAdapter(''),
     dataSource          : '',
+    dateFormat          : '',
     enterFilter         : true,
     enterFind           : false,
     jsonSource          : null,
@@ -545,6 +556,7 @@ class EnhanceDataGrid {
     showRowIndex        : true,
     tbElement           : [],
     useBootstrap        : false, // TODO: think about the controlling of this flag, use Bootstrap theme ? function ?
+    // useBootstrap > use bootstrap helper 'd-flex' on button-container instead of my own 'edg-group'
   };
 
   /** @private */
@@ -634,7 +646,7 @@ class EnhanceDataGrid {
     this.#_dataAdapter = zProps.dataAdapter;
 
     if (EnhanceDataGrid.isUnset(props['source'])) {
-      // TODO: last priority
+      // NOTE: last priority
       if (this.#_jsonSource && typeof this.#_jsonSource === 'object') {
         this.#_dataSource = {
           url       : this.#_jsonSource.url ? this.#_jsonSource.url : '',
@@ -665,11 +677,11 @@ class EnhanceDataGrid {
           };
       }
 
-      // TODO: second priority
+      // NOTE: second priority
       if (this.#_dataSource)
-        props['source'] = new $.jqx.dataAdapter(this.#_dataSource);
+        this.#_dataAdapter = new $.jqx.dataAdapter(this.#_dataSource); // props['source'] = new $.jqx.dataAdapter(this.#_dataSource);
 
-      // TODO: first priority
+      // NOTE: first priority
       if (this.#_dataAdapter)
         props['source'] = this.#_dataAdapter;
     }
@@ -774,6 +786,13 @@ class EnhanceDataGrid {
         if (!c.hidden && !c.align)
           c.align = 'center';
       });
+
+      if (this.#_props.columngroups) {
+        this.#_props.columngroups.forEach(c => {
+          if (!c.hidden && !c.align)
+            c.align = 'center';
+        });
+      }
     }
 
     this.#_displayRowIndex();
@@ -839,30 +858,47 @@ class EnhanceDataGrid {
 
       // NOTE: display search bar if set
       if (typeof zProps.searchInput === 'boolean' && zProps.searchInput) {
-        const enterKeyFind = typeof zProps.enterFind === 'boolean' && zProps.enterFind;
-        const enterKeyFilter = typeof zProps.enterFilter === 'boolean' && zProps.enterFilter;
-        const isAutoFind = typeof zProps.autoFind === 'boolean' && zProps.autoFind;
-        const isAutoFilter = typeof zProps.autoFilter === 'boolean' && zProps.autoFilter;
+        const enterKeyFind    = typeof zProps.enterFind === 'boolean' && zProps.enterFind;
+        const enterKeyFilter  = typeof zProps.enterFilter === 'boolean' && zProps.enterFilter;
+        const isAutoFind      = typeof zProps.autoFind === 'boolean' && zProps.autoFind;
+        const isAutoFilter    = typeof zProps.autoFilter === 'boolean' && zProps.autoFilter;
 
-        let searchPlaceHolder = '';
+        let searchPlaceHolder = 'No functioning... (T_T)';
+        let findTitle = 'Find';
+        let filterTitle = 'Filter';
+        let clearPlaceHolder = 'No functioning... (T_T)';
 
-        if (enterKeyFind)
+        if (enterKeyFind) {
           searchPlaceHolder = 'Find Record';
+          findTitle = 'Find (Ctrl+Enter)';
+          clearPlaceHolder = 'Clear Find (ESC)';
+        }
 
-        if (enterKeyFilter)
+        if (enterKeyFilter) {
           searchPlaceHolder = 'Filter Record';
+          filterTitle = 'Filter (Enter)';
+          clearPlaceHolder = 'Clear Filter (ESC)';
+        }
 
-        if (enterKeyFind && enterKeyFilter)
+        if (enterKeyFind && enterKeyFilter) {
           searchPlaceHolder = 'Find/Filter Record';
+          clearPlaceHolder = 'Clear Find/Filter (ESC)';
+        }
 
-        if (isAutoFind)
+        if (isAutoFind) {
           searchPlaceHolder = 'Auto Find Record';
+          clearPlaceHolder = 'Clear Find (ESC)';
+        }
 
-        if (isAutoFilter)
+        if (isAutoFilter) {
           searchPlaceHolder = 'Auto Filter Record';
+          clearPlaceHolder = 'Clear Filter (ESC)';
+        }
 
-        if (isAutoFind && isAutoFilter)
-          searchPlaceHolder = 'Error';
+        if (isAutoFind && isAutoFilter) {
+          searchPlaceHolder = 'autoFind? autoFilter?';
+          clearPlaceHolder = 'autoFind? autoFilter?';
+        }
 
         // add search input
         let searchInputProp = {
@@ -883,9 +919,6 @@ class EnhanceDataGrid {
           searchInputCSS.margin = '0px 5px 0px 0px';
         }
 
-        /* if (typeof zProps.enterFilter === 'boolean' && zProps.enterFilter)
-          searchInputProp.placeHolder = 'Find: Press Enter to filter'; */
-
         const searchInput =
           $(`<input id="${setId}_searchInput" type="text" />`)
             .jqxInput(searchInputProp)
@@ -900,35 +933,18 @@ class EnhanceDataGrid {
           height: 25
         };
 
-        // NOTE: auto find data feature
-        // auto find will disabled Enter Find/Filter feature
+        // NOTE: auto find data feature, auto find will disabled Enter Find/Filter feature
         if (isAutoFind || isAutoFilter) {
           if (isAutoFind && isAutoFilter) {
             this.#_alert({
               columnClass : 'medium',
               title       : '<b>Setting Error</b>',
-              content     : 'You can either set autoFind:true or autoFilter:true but not both.'
+              content     : `Grid ID: ${this.#_id}. You can either set autoFind:true or autoFilter:true but not both.`
             });
 
             return false;
           }
 
-          /*/
-          const delaySearch = EnhanceDataGrid.debounce(function(event) {
-            if (this.value.trim() || EnhanceDataGrid.isValidKeyboardInput(event)) {
-              event.preventDefault();
-
-              if (isAutoFind)
-                self.#_highlightData($(event.target), true);
-
-              if (isAutoFilter)
-                self.#_filterData($(event.target), true);
-            }
-          }, 500);
-
-          searchInput
-            .keyup(delaySearch);
-          /*/
           const delaySearch = EnhanceDataGrid.debounce(function(event) {
             if (searchInput.val().trim() || EnhanceDataGrid.isValidKeyboardInput(event)) {
               event.preventDefault();
@@ -946,10 +962,9 @@ class EnhanceDataGrid {
               delaySearch(event);
 
               if (event.which === 27) { // NOTE: ESC keyCode
-                clearFilterButton.trigger('click');
+                clearButton.trigger('click');
               }
             });
-          //*/
         } else {
           // NOTE: Enter to search(+ CtrlKey)/filter feature
           // TODO: provide user-defined onclick feature
@@ -966,14 +981,15 @@ class EnhanceDataGrid {
               }
 
               if (event.which === 27) { // NOTE: ESC keyCode
-                clearFilterButton.trigger('click');
+                clearButton.trigger('click');
               }
             });
 
           // NOTE: show/hide 'Find' button
           const findButton =
             $('<button>')
-              .attr('title', 'Find (Ctrl+Enter)');
+              .attr('title', findTitle);
+              // .attr('title', 'Find (Ctrl+Enter)');
 
           if (typeof zProps.showFindButton === 'boolean' && zProps.showFindButton) {
             $('<i>')
@@ -997,7 +1013,8 @@ class EnhanceDataGrid {
           // NOTE: show/hide 'Filter' button
           const filterButton =
             $('<button>')
-              .attr('title', 'Filter (Enter)');
+              .attr('title', filterTitle);
+              // .attr('title', 'Filter (Enter)');
 
           if (typeof zProps.showFilterButton === 'boolean' && zProps.showFilterButton) {
             $('<i>')
@@ -1019,88 +1036,97 @@ class EnhanceDataGrid {
           }
         }
 
-        // NOTE: 'Clear Filter' button
-        const clearFilterButton =
+        // NOTE: 'Clear' button
+        const clearButton =
           $('<button>')
-            .attr('title', 'Clear Filter');
+            .attr('title', clearPlaceHolder);
 
         $('<i>')
-          .attr('id', `${setId}_advancedFilterClear`)
+          .attr('id', `${setId}_filterRowClear`)
           .addClass('fa-solid fa-fw fa-xmark')
-          .appendTo(clearFilterButton);
+          .appendTo(clearButton);
 
-        clearFilterButton
+        clearButton
           .jqxButton(searchRelatedButtonCSS)
           .on('click', event => {
             event.preventDefault();
 
-            self.jqxGrid.jqxGrid('clearfilters');
+            if (self.#_syntax === 'old')
+              self.jqxGrid.jqxGrid('clearfilters');
+
+            if (self.#_syntax === 'new')
+              self.jqxGrid.clearfilters();
+
             self.clearSelection();
 
-            // TODO:: think about callback operation between single column filer and advanced filter
+            // TODO:: think about callback operation between single column filer and filter-row
             // if (!self.jqxGrid.jqxGrid('showfilterrow'))
               searchInput.val(null);
           });
 
-        container.append(clearFilterButton);
+        container.append(clearButton);
 
         // NOTE: show/hide 'Filter Row' button
         if (typeof zProps.showFilterRowButton === 'boolean' && zProps.showFilterRowButton) {
-          const advancedFilterButton =
+          const filterRowButton =
             $('<button>')
               .attr({
-                id: `${setId}_advancedFilterBtn`,
+                id: `${setId}_filterRowButton`,
                 title: 'Show Filter Row'
               });
 
           if (typeof props.showfilterrow === 'boolean' && props.showfilterrow) {
             $('<i>')
-              .attr('id', `${setId}_advancedFilterArrowDown`)
+              .attr('id', `${setId}_filterRowArrowDown`)
               .addClass('fa-solid fa-fw fa-chevron-down')
               .hide()
-              .appendTo(advancedFilterButton);
+              .appendTo(filterRowButton);
 
             $('<i>')
-              .attr('id', `${setId}_advancedFilterArrowUp`)
+              .attr('id', `${setId}_filterRowArrowUp`)
               .addClass('fa-solid fa-fw fa-chevron-up')
-              .appendTo(advancedFilterButton);
+              .appendTo(filterRowButton);
           } else {
             $('<i>')
-              .attr('id', `${setId}_advancedFilterArrowDown`)
+              .attr('id', `${setId}_filterRowArrowDown`)
               .addClass('fa-solid fa-fw fa-chevron-down')
-              .appendTo(advancedFilterButton);
+              .appendTo(filterRowButton);
 
             $('<i>')
-              .attr('id', `${setId}_advancedFilterArrowUp`)
+              .attr('id', `${setId}_filterRowArrowUp`)
               .addClass('fa-solid fa-fw fa-chevron-up')
               .hide()
-              .appendTo(advancedFilterButton);
+              .appendTo(filterRowButton);
           }
 
-          // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(advancedFilterButton);
-          advancedFilterButton
+          // $('<span>').css({ marginLeft: 5 }).text('Filter').appendTo(filterRowButton);
+          filterRowButton
             .jqxButton(searchRelatedButtonCSS)
             .on('click', event => {
               event.preventDefault();
 
-              $(`${gridId}_advancedFilterBtn`)
+              $(`${gridId}_filterRowButton`)
                 .attr('title', self.jqxGrid.jqxGrid('showfilterrow') ? 'Show Filter Row' : 'Hide Filter Row');
 
               self.jqxGrid.jqxGrid({ showfilterrow: !self.jqxGrid.jqxGrid('showfilterrow') });
 
               // NOTE: enable clear filter button & toggle arrow icon {down/up}
-              self.jqxGrid.jqxGrid('clearfilters');
+              if (self.#_syntax === 'old')
+                self.jqxGrid.jqxGrid('clearfilters');
+
+              if (self.#_syntax === 'new')
+                self.jqxGrid.clearfilters();
 
               if (self.jqxGrid.jqxGrid('showfilterrow')) {
-                $(`${gridId}_advancedFilterArrowDown`).hide();
-                $(`${gridId}_advancedFilterArrowUp`).show();
+                $(`${gridId}_filterRowArrowDown`).hide();
+                $(`${gridId}_filterRowArrowUp`).show();
               } else {
-                $(`${gridId}_advancedFilterArrowDown`).show();
-                $(`${gridId}_advancedFilterArrowUp`).hide();
+                $(`${gridId}_filterRowArrowDown`).show();
+                $(`${gridId}_filterRowArrowUp`).hide();
               }
             });
 
-          container.append(advancedFilterButton);
+          container.append(filterRowButton);
         }
 
         // NOTE: Append field divider
@@ -1433,7 +1459,10 @@ class EnhanceDataGrid {
                             //   alert("finished");
                             // });
                         } else {
-                          self.#_alert({ title: '', content: controlledMessage.no_data_id, });
+                          self.#_alert({
+                            title: '',
+                            content: controlledMessage.no_data_id,
+                          });
 
                           return false;
                         }
@@ -1582,7 +1611,7 @@ class EnhanceDataGrid {
     // Form related functions
     function _clearFormInputs(form) {
       if ($(form).length > 0) {
-        // TODO: debug for reset form input
+        // TODO: enhance for reset form input
         let debug = false;
         debug = true;
 
@@ -1859,49 +1888,56 @@ class EnhanceDataGrid {
           //   disabled: tbElement[i].disabled
           // });
         } else {
-          const generatedButton = this.#_generateButtonSyntax({
-            id        : tbElement[i].id ? tbElement[i].id : null,
-            disabled  : typeof tbElement[i].disabled === 'boolean' ? tbElement[i].disabled : false,
-            icon      : tbElement[i].icon ? tbElement[i].icon : buttonDefault[btn].icon,
-            iconColor : tbElement[i].iconColor ? tbElement[i].iconColor : buttonDefault[btn].iconColor,
-            text      : (tbElement[i].text || tbElement[i].text === '') ? tbElement[i].text : '', // buttonDefault[btn].text,
-            title     : (tbElement[i].title || tbElement[i].title === '') ? tbElement[i].title : buttonDefault[btn].title,
-          });
+          if (buttonDefault[btn]) {
+            const generatedButton = this.#_generateButtonSyntax({
+              id        : tbElement[i].id ? tbElement[i].id : null,
+              disabled  : typeof tbElement[i].disabled === 'boolean' ? tbElement[i].disabled : false,
+              icon      : tbElement[i].icon ? tbElement[i].icon : buttonDefault[btn].icon,
+              iconColor : tbElement[i].iconColor ? tbElement[i].iconColor : buttonDefault[btn].iconColor,
+              text      : (tbElement[i].text || tbElement[i].text === '') ? tbElement[i].text : '', // buttonDefault[btn].text,
+              title     : (tbElement[i].title || tbElement[i].title === '') ? tbElement[i].title : buttonDefault[btn].title,
+            });
 
-          if (tbElement[i].admin === true || tbElement[i].admin === 1 || tbElement[i].admin === '1') {
-            generatedButton.addClass('btn-admin');
+            if (tbElement[i].admin === true || tbElement[i].admin === 1 || tbElement[i].admin === '1') {
+              generatedButton.addClass('btn-admin');
+            }
+
+            // NOTE: Register EventListener
+            let funcName = '_' + btn;
+
+            // if (tbElement[i].form) funcName += 'Form'; // combine 'normal' and 'form' are same now
+
+            generatedButton
+              .on('click',
+                tbElement[i].click
+                  ? e => tbElement[i].click(e, self.getSelectedRowData())
+                  : buttonEvent.click[funcName]
+              );
+
+            if (tbElement[i].beforeClick)
+              generatedButton.keydown(tbElement[i].beforeClick);
+
+            if (tbElement[i].afterClick)
+              generatedButton.keyup(tbElement[i].afterClick);
+
+            // NOTE: draw toolbar button
+            tbElement[i] = this.#_initGridButton({
+              container : container,
+              btn       : generatedButton,
+              theme     : tbElement[i].theme  ? tbElement[i].theme  : this.#_zprops.buttonTheme,
+              width     : tbElement[i].width  ? tbElement[i].width  : (tbElement[i].text || tbElement[i].text === '') ? 'auto' : buttonDefault[btn].width,
+              height    : tbElement[i].height ? tbElement[i].height : buttonDefault[btn].height,
+              widget    : tbElement[i].widget ? tbElement[i].widget : buttonDefault[btn].widget,
+              disabled  : tbElement[i].disabled,
+              btnElement: tbElement[i],
+            });
+            // console.log(tbElement[i]);
+          } else {
+            self.#_alert({
+              title: 'Undefined Button',
+              content: `Unknown "${btn}" button.`,
+            });
           }
-
-          // NOTE: Register EventListener
-          let funcName = '_' + btn;
-
-          // if (tbElement[i].form) funcName += 'Form'; // combine 'normal' and 'form' are same now
-
-          generatedButton
-            .on('click',
-              tbElement[i].click
-                ? e => tbElement[i].click(e, self.getSelectedRowData())
-                : buttonEvent.click[funcName]
-            );
-
-          if (tbElement[i].beforeClick)
-            generatedButton.keydown(tbElement[i].beforeClick);
-
-          if (tbElement[i].afterClick)
-            generatedButton.keyup(tbElement[i].afterClick);
-
-          // NOTE: draw toolbar button
-          tbElement[i] = this.#_initGridButton({
-            container : container,
-            btn       : generatedButton,
-            theme     : tbElement[i].theme  ? tbElement[i].theme  : this.#_zprops.buttonTheme,
-            width     : tbElement[i].width  ? tbElement[i].width  : (tbElement[i].text || tbElement[i].text === '') ? 'auto' : buttonDefault[btn].width,
-            height    : tbElement[i].height ? tbElement[i].height : buttonDefault[btn].height,
-            widget    : tbElement[i].widget ? tbElement[i].widget : buttonDefault[btn].widget,
-            disabled  : tbElement[i].disabled,
-            btnElement: tbElement[i],
-          });
-          // console.log(tbElement[i]);
         }
       }
     } // EOF for loop
@@ -2040,58 +2076,110 @@ class EnhanceDataGrid {
   } // end of #_getGridButtonProps
 
   /** @private */
-  // TODO: need cover new syntax
   #_highlightData(searchInput, clearInputWhenError = false) {
-    const sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
+    // NOTE: 'Find' in search input
+    let sortColumn;
+
+    if (this.#_syntax === 'old')
+      sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
+
+    if (this.#_syntax === 'new')
+      sortColumn = this.jqxGrid.getsortcolumn();
 
     if (sortColumn) {
-      // var rows = $(self.id).jqxGrid('getboundrows');
-      // var rows = $(self.id).jqxGrid('getrows');
-      const rows = this.jqxGrid.jqxGrid('getdisplayrows');
+      if (this.#_syntax === 'old') {
+        // var rows = $(self.id).jqxGrid('getboundrows');
+        // var rows = $(self.id).jqxGrid('getrows');
+        const rows = this.jqxGrid.jqxGrid('getdisplayrows');
 
-      const searchValue = searchInput.val().trim().toLowerCase();
-      const columnCellFormat = this.jqxGrid.jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
-      let highlightRowIndex = -1;
-      let visibleRowIndex = -1;
+        const searchValue = searchInput.val().trim().toLowerCase();
+        const columnCellFormat = this.jqxGrid.jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
+        let highlightRowIndex = -1;
+        let visibleRowIndex = -1;
 
-      if (searchValue) { // valid input
-        let cellValue = '';
+        if (searchValue) { // valid input
+          let cellValue = '';
 
-        for (let i = 0; i < rows.length; i++) {
-          cellValue = rows[i][sortColumn];
+          for (let i = 0; i < rows.length; i++) {
+            cellValue = rows[i][sortColumn];
 
-          // TODO: need define date-format
-          // NOTE: change date to readable value
-          /* if (columnCellFormat === constant.app.dateFormat) {
-            cellValue = libDate.dateToString(rows[i][sortColumn]);
-          } */
+            // TODO: need define date-format
+            // NOTE: change date to readable value
+            /* if (columnCellFormat === constant.app.dateFormat) {
+              cellValue = libDate.dateToString(rows[i][sortColumn]);
+            } */
 
-          if (EnhanceDataGrid.isNull(rows[i][sortColumn])) continue;
+            if (EnhanceDataGrid.isNull(rows[i][sortColumn])) continue;
 
-          const result = cellValue.toString().toLowerCase().search(searchValue);
+            const result = cellValue.toString().toLowerCase().search(searchValue);
 
-          if (result > -1) {
-            // highlightRowIndex = $(this.id).jqxGrid('getrowboundindexbyid', rows[i].id);
-            highlightRowIndex = this.jqxGrid.jqxGrid('getrowboundindex', i);
-            visibleRowIndex = i;
-            break;
+            if (result > -1) {
+              // highlightRowIndex = $(this.id).jqxGrid('getrowboundindexbyid', rows[i].id);
+              highlightRowIndex = this.jqxGrid.jqxGrid('getrowboundindex', i);
+              visibleRowIndex = i;
+              break;
+            }
           }
+        }
+
+        // NOTE: highlight & scroll to the row
+        if (highlightRowIndex > -1) {
+          this.jqxGrid.jqxGrid('selectrow', highlightRowIndex);
+          this.jqxGrid.jqxGrid('ensurerowvisible', visibleRowIndex);
+        } else {
+          this.clearSelection();
         }
       }
 
-      // NOTE: highlight & scroll to the row
-      if (highlightRowIndex > -1) {
-        this.jqxGrid.jqxGrid('selectrow', highlightRowIndex);
-        this.jqxGrid.jqxGrid('ensurerowvisible', visibleRowIndex);
-      } else {
-        this.clearSelection();
+      if (this.#_syntax === 'new') {
+        // var rows = $(self.id).getboundrows();
+        // var rows = $(self.id).getrows();
+        const rows = this.jqxGrid.getdisplayrows();
+
+        const searchValue = searchInput.val().trim().toLowerCase();
+        const columnCellFormat = this.jqxGrid.getcolumnproperty(sortColumn, 'cellsformat');
+        let highlightRowIndex = -1;
+        let visibleRowIndex = -1;
+
+        if (searchValue) { // valid input
+          let cellValue = '';
+
+          for (let i = 0; i < rows.length; i++) {
+            cellValue = rows[i][sortColumn];
+
+            // TODO: need define date-format
+            // NOTE: change date to readable value
+            /* if (columnCellFormat === constant.app.dateFormat) {
+              cellValue = libDate.dateToString(rows[i][sortColumn]);
+            } */
+
+            if (EnhanceDataGrid.isNull(rows[i][sortColumn])) continue;
+
+            const result = cellValue.toString().toLowerCase().search(searchValue);
+
+            if (result > -1) {
+              // highlightRowIndex = $(this.id).getrowboundindexbyid(rows[i].id);
+              highlightRowIndex = this.jqxGrid.getrowboundindex(i);
+              visibleRowIndex = i;
+              break;
+            }
+          }
+        }
+
+        // NOTE: highlight & scroll to the row
+        if (highlightRowIndex > -1) {
+          this.jqxGrid.selectrow(highlightRowIndex);
+          this.jqxGrid.ensurerowvisible(visibleRowIndex);
+        } else {
+          this.clearSelection();
+        }
       }
 
       return true;
     } else {
       this.#_alert({
         columnClass : 'medium',
-        title       : '<b>Find Data Warning</b>',
+        title       : '<b>Warning : Find Data</b>',
         content     : 'Please perform column sorting to select search field.'
       });
 
@@ -2103,45 +2191,94 @@ class EnhanceDataGrid {
   } // end of #_highlightData
 
   /** @private */
-  // TODO: need cover new syntax
   #_filterData(searchInput, clearInputWhenError = false) {
-    // NOTE: Filter search
-    const sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
+    // NOTE: 'Filter' in search input
+    let sortColumn;
+
+    if (this.#_syntax === 'old')
+      sortColumn = this.jqxGrid.jqxGrid('getsortcolumn');
+
+    if (this.#_syntax === 'new')
+      sortColumn = this.jqxGrid.getsortcolumn();
 
     if (sortColumn) {
-      const columnCellFormat = this.jqxGrid.jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
-      const filtergroup = new $.jqx.filter();
-      const filter_or_operator = 1;
-      let filtervalue = searchInput.val().trim();
+      if (this.#_syntax === 'old') {
+        const columnCellFormat = this.jqxGrid.jqxGrid('getcolumnproperty', sortColumn, 'cellsformat');
+        const filtergroup = new $.jqx.filter();
+        const filter_or_operator = 1;
+        let filtervalue = searchInput.val().trim();
 
-      if (filtervalue) {
-        // NOTE: string filter
-        const filterString = filtergroup.createfilter('stringfilter', filtervalue, 'CONTAINS');
-        filtergroup.addfilter(filter_or_operator, filterString);
+        if (filtervalue) {
+          // NOTE: string filter
+          const filterString = filtergroup.createfilter('stringfilter', filtervalue, 'CONTAINS');
+          filtergroup.addfilter(filter_or_operator, filterString);
 
-        // NOTE: numeric filter
-        const filterNumeric = filtergroup.createfilter('numericfilter', filtervalue, 'EQUAL');
-        // filtergroup.addfilter(filter_or_operator, filterNumeric);
+          // NOTE: numeric filter
+          const filterNumeric = filtergroup.createfilter('numericfilter', filtervalue, 'EQUAL');
+          // filtergroup.addfilter(filter_or_operator, filterNumeric);
 
-        // NOTE: date filter
-        // if (columnCellFormat === constant.app.dateFormat) {
-        //   filtervalue = Date.parse(filtervalue);
+          // TODO: try to find a general way to perform date fitler
+          // NOTE: date filter
+          const dateFormat = this.#_zprops.dateFormat;
+          if (dateFormat && columnCellFormat === dateFormat) {
+            // console.log(`entered: ${filtervalue}`);
 
-        //   var filterDate = filtergroup.createfilter('datefilter', filtervalue, 'EQUAL');
-        //   filtergroup.addfilter(filter_or_operator, filterDate);
-        // }
+            // filtervalue = Date.parse(filtervalue);
+            filtervalue = new Date(filtervalue);
 
-        this.jqxGrid.jqxGrid('addfilter', sortColumn, filtergroup);
-        this.jqxGrid.jqxGrid('applyfilters');
-      } else {
-        this.jqxGrid.jqxGrid('clearfilters');
+            var filterDate = filtergroup.createfilter('datefilter', filtervalue, 'EQUAL');
+            filtergroup.addfilter(filter_or_operator, filterDate);
+            // console.log(`apply date filter: ${dateFormat}|${filtervalue}`)
+          }
+
+          this.jqxGrid.jqxGrid('addfilter', sortColumn, filtergroup);
+          this.jqxGrid.jqxGrid('applyfilters');
+        } else {
+          this.jqxGrid.jqxGrid('clearfilters');
+        }
+      }
+
+      if (this.#_syntax === 'new') {
+        const columnCellFormat = this.jqxGrid.getcolumnproperty(sortColumn, 'cellsformat');
+        const filtergroup = new $.jqx.filter();
+        const filter_or_operator = 1;
+        let filtervalue = searchInput.val().trim();
+
+        if (filtervalue) {
+          // NOTE: string filter
+          const filterString = filtergroup.createfilter('stringfilter', filtervalue, 'CONTAINS');
+          filtergroup.addfilter(filter_or_operator, filterString);
+
+          // NOTE: numeric filter
+          const filterNumeric = filtergroup.createfilter('numericfilter', filtervalue, 'EQUAL');
+          // filtergroup.addfilter(filter_or_operator, filterNumeric);
+
+          // TODO: try to find a general way to perform date fitler
+          // NOTE: date filter
+          const dateFormat = this.#_zprops.dateFormat;
+          if (dateFormat && columnCellFormat === dateFormat) {
+            // console.log(`entered: ${filtervalue}`);
+
+            // filtervalue = Date.parse(filtervalue);
+            filtervalue = new Date(filtervalue);
+
+            var filterDate = filtergroup.createfilter('datefilter', filtervalue, 'EQUAL');
+            filtergroup.addfilter(filter_or_operator, filterDate);
+            // console.log(`apply date filter: ${dateFormat}|${filtervalue}`)
+          }
+
+          this.jqxGrid.addfilter(sortColumn, filtergroup);
+          this.jqxGrid.applyfilters();
+        } else {
+          this.jqxGrid.clearfilters();
+        }
       }
 
       return true;
     } else {
       this.#_alert({
         columnClass : 'medium',
-        title       : '<b>Filter Data Warning</b>',
+        title       : '<b>Warning : Filter Data</b>',
         content     : 'Please perform column sorting to select filter field.'
       });
 
@@ -2161,20 +2298,37 @@ class EnhanceDataGrid {
    * @todo [<b>Bootstrap</b>]{@link https://getbootstrap.com/} - https://getbootstrap.com/
    * @todo [<b>jQuery-Confirm</b>]{@link https://craftpip.github.io/jquery-confirm/} - https://craftpip.github.io/jquery-confirm/
    *
-   * @param {}                prop.jqxGridProperties              - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}.
+   * @param {}                prop.jqxGridProperties                      - Refer to Properties Category at [jqxGrid API]{@link https://goo.gl/sqcJnv}.<br />Inherit all properties from jqxGrid with following preset properties.
+   * @param {Number|String}   prop.jqxGridProperties.width='100%'         - Grid's width.
+   * @param {Number|String}   prop.jqxGridProperties.height='100%'        - Grid's height.
+   * @param {Boolean}         prop.jqxGridProperties.sortable=true        - The sortable property enables or disables the sorting feature.
+   * @param {Boolean}         prop.jqxGridProperties.filterable=true      - Enable/Disable the Grid Filtering feature.
+   * @param {String}          prop.jqxGridProperties.filtermode='excel'   - The property specifies the type of rendering of the Filter Menu.
+   * @param {Boolean}         prop.jqxGridProperties.enabletooltips=true  - Enable/Disable the grid tooltips.
+   * @param {Boolean}         prop.jqxGridProperties.showaggregates=true  - Show/Hide the aggregates in the grid's statusbar.
+   * @param {Boolean}         prop.jqxGridProperties.showstatusbar=true   - Show/Hide the grid's statusbar.
+   *
    * @param {Object}          prop                                - EnhanceDataGrid object properties, sets [prop]{@link EnhanceDataGrid#prop}.
    * @param {String}          prop.id                             - Grid's ID.
-   * @param {String}          prop.dataSource=''                  - Grid's data source, needed when dataAdapter not provided.
-   * @param {Object}          [prop.dataAdapter]                  - Grid's data adapter, needed when dataSource not provided.
+   * @param {Object}          [prop.jsonSource]                   - Grid's data source preset with JSON data type.
+   * @param {Object}          [prop.dataSource]                   - Grid's data source object.
+   * @param {Object}          [prop.dataAdapter]                  - Grid's data adapter object.
    * @param {String}          [prop.checkedDatafield='selected']  - Data field which use to get all selected data ID.
+   * @param {String}          [prop.buttonTheme='']               - Default theme for built-in button component.
    * @param {Boolean}         [prop.useBootstrap=false]           - Enable/Disable Bootstrap Theme on Grid message.
-   * @param {Boolean}         [prop.searchInput=false]            - Show search bar (in toolbar).
+   * @param {Boolean}         [prop.centeredColumns=false]        - Sets True to auto append { align: 'center' } to all columns.
+   * @param {Boolean}         [prop.showRowIndex=true]            - Shows row index.
+   * @param {Number}          [prop.rowIndexWidth=50]             - Row index width.
+   * @param {Boolean}         [prop.searchInput=false]            - Shows search bar (in toolbar).
    *
-   * @param {Boolean}         [prop.showFindButton=false]         - Show 'Find' button (in toolbar).
-   * @param {Boolean}         [prop.showFilterButton=true]        - Show 'Filter' button (in toolbar).
-   * @param {Boolean}         [prop.showFilterRowButton=true]     - Show 'Filter Row' toggle button (in toolbar).
-   * @param {Boolean}         [prop.showRowIndex=true]            - Show row index.
-   * @param {Boolean}         [prop.rowIndexWidth=50]             - Row index width.
+   * @param {Boolean}         [prop.showFindButton=false]         - Shows 'Find' button (in toolbar).
+   * @param {Boolean}         [prop.showFilterButton=true]        - Shows 'Filter' button (in toolbar).
+   * @param {Boolean}         [prop.showFilterRowButton=true]     - Shows 'Filter Row' toggle button (in toolbar).
+   * @param {Boolean}         [prop.enterFilter=true]             - Keyboard shortcut Filter (Enter key).
+   * @param {Boolean}         [prop.enterFind=false]              - Keyboard shortcut Find (Ctrl+Enter key).
+   * @param {Boolean}         [prop.autoFilter=false]             - Auto filter after certain timing delay.
+   * @param {Boolean}         [prop.autoFind=false]               - Auto find after certain timing delay.
+   * @param {Number}          [prop.autoDelayTiming=300]          - Timing delay for autoFilter/autoFind (in miliseconds).
    * @param {Object[]}        [prop.tbElement=[ ]]                - Grid's toolbar built-in component, see "<code>tbElement.</code>" parameter for component properties.
    *
    * @!param {Object}          tbElement                         - Built-in components, "prop.tbElement" object properties.
@@ -2266,19 +2420,59 @@ class EnhanceDataGrid {
      * EnhanceDataGrid properties.
      *
      * @example
+     * const source_json_object = {
+     *   url: 'url.php',
+     *   datafields: [
+     *     { name: 'id', type: 'number' },
+     *     ...
+     *   ],
+     * };
+     * const source_url_object = {
+     *   id: 'id',
+     *   datafields: [
+     *     { name: 'id', type: 'number' },
+     *     ...
+     *   ],
+     *   // example for JSON
+     *   datatype: "json",
+     *   url: 'url.php',
+     *   // example for local Array
+     *   datatype: "array",
+     *   localdata: [Array of Object],
+     * };
      * // default syntax
-     * new EnhanceDataGrid({
+     * const grid = new EnhanceDataGrid({
+     *   // Preset jqxGrid properties
+     *   width              : '100%',
+     *   height             : '100%',
+     *   sortable           : true,
+     *   filterable         : true,
+     *   filtermode         : 'excel',
+     *   enabletooltips     : true,
+     *   showaggregates     : true,
+     *   showstatusbar      : true,
+     *   // EnhanceDataGrid properties
      *   id                 : '#grid_id',
-     *   dataSource         : {source_url_object}, // Refer to updateSourceUrl() method for example
-     *   dataAdapter        : new $.jqx.dataAdapter({source_url_object}),
+     *   // using either one, (1)jsonSource | (2)dataSource | (3)dataAdapter
+     *   jsonSource         : source_json_object,                       // method (1)
+     *   dataSource         : source_url_object,                        // method (2), refer to updateSourceUrl() method for example
+     *   dataAdapter        : new $.jqx.dataAdapter(source_url_object), // method (3)
+     *   // dateFormat         : 'yyyy-MM-dd',
      *   checkedDatafield   : 'checked',
+     *   buttonTheme        : 'fresh',
      *   useBootstrap       : true,
+     *   centeredColumns    : true,
+     *   showRowIndex       : false,
+     *   rowIndexWidth      : 100,
      *   searchInput        : true,
      *   showFindButton     : false,
      *   showFilterButton   : false,
      *   showFilterRowButton: false,
-     *   showRowIndex       : false,
-     *   rowIndexWidth      : 100,
+     *   enterFilter        : false,
+     *   enterFind          : true,
+     *   autoFilter         : true,
+     *   autoFind           : true,
+     *   autoDelayTiming    : 500, // in miliseconds
      *   tbElement          : [
      *     { button: 'reload' },
      *     { button: 'add', win: '#jqxWindow_id', form: '#form_id', winOpenOnButton: false,
@@ -2323,7 +2517,7 @@ class EnhanceDataGrid {
      *   ],
      * });
      * // new syntax
-     * new EnhanceDataGrid('#grid_id', {
+     * const grid = new EnhanceDataGrid('#grid_id', {
      *   id: '#grid_id',
      *   ...
      * });
@@ -2612,9 +2806,8 @@ class EnhanceDataGrid {
     if (this.#_syntax === 'old')
       return this.jqxGrid.jqxGrid('source')._source.url;
 
-    // TODO: thin of what to do
     if (this.#_syntax === 'new')
-      return null;
+      return this.jqxGrid.source._source.url;
   } // end of getSourceUrl
 
   /**
@@ -2715,7 +2908,7 @@ class EnhanceDataGrid {
   } // end of refresh
 
   /**
-   * Show column.
+   * Shows column.
    *
    * @param {String|Array.<String>} dataField - Data field / Array of data field.
    *
@@ -2892,18 +3085,12 @@ class EnhanceDataGrid {
    * @see jqxGrid has multiple types of data collections, refer [Grid Data Sources]{@link https://www.jqwidgets.com/jquery-widgets-documentation/documentation/jqxgrid/jquery-grid-datasources.htm?search=jqxGrid} for complete reference.
    */
   updateSourceUrl(url, autoRefresh) {
-    if (this.#_syntax === 'old') {
-      if (!this.#_dataSource)
-        this.dataAdapter._source.url = url;
-      else
-        this.#_dataSource.url = url;
+    if (!this.#_dataSource)
+      this.dataAdapter._source.url = url;
+    else
+      this.#_dataSource.url = url;
 
-      if (typeof autoRefresh === 'undefined' || (typeof autoRefresh === 'boolean' && autoRefresh))
-        this.refresh();
-    }
-
-    // TODO: thin of what to do
-    if (this.#_syntax === 'new')
-      return null;
+    if (typeof autoRefresh === 'undefined' || (typeof autoRefresh === 'boolean' && autoRefresh))
+      this.refresh();
   } // end of updateSourceUrl
 }
