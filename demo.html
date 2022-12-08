@@ -809,6 +809,39 @@
          */
         console.warn('====== Official Start ======');
 
+        const main_content = $('main')
+
+        main_content.empty();
+
+        const demo_content = [
+          { title: `Default Functionality` },
+          { title: `Search Input <small>( Default '<i>Filter (Enter) Record</i>' mode )</small>` },
+          { title: `Search Input <small>( '<i>Find (Ctrl+Enter) Record</i>' mode )</small>` },
+          { title: `Search Input <small>( '<i>Find/Fitler Record</i>' mode )</small>` },
+          { title: `Reload, Add, Edit, Delete buttons` },
+        ];
+
+        demo_content.forEach((el, index) => {
+          const numb = index + 1;
+          const section = $(`<section>
+            <h6>${el.title}</h6>
+            <div class="tab-container">
+              <ul>
+                <li>Demo</li>
+                <li>View Source</li>
+              </ul>
+              <div class="p-1">
+                <div id="edg_${numb}"></div>
+              </div>
+              <div>
+                Source Code
+              </div>
+            </div>
+          </section>`);
+
+          main_content.append(section);
+        });
+
         $('.tab-container').jqxTabs({
           theme: 'material',
           width: '100%',
@@ -816,6 +849,7 @@
           // position: 'top'
         });
 
+        //*/
         // Default Functionality
         const edg_1 = new EnhanceDataGrid({
           id: '#edg_1',
@@ -879,6 +913,7 @@
             { button: 'delete' },
           ]
         });
+        //*/
 
         console.warn('====== Official End ======');
       });

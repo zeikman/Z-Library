@@ -1,8 +1,11 @@
 /jqwidgets*
 /jquery*
 /bootstrap*
+zeikman*
+images/
 *-old*
 *-backup*
-*documentation*
+*cheatsheet/
+*documentation/
 *jsdoc*
 *jszip*
