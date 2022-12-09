@@ -2900,11 +2900,13 @@ class EnhanceDataGrid {
   refresh() {
     this.#_clearSelection = true;
 
-    if (this.#_syntax === 'old')
-      this.updateBoundData('all');
+    this.updateBoundData('all');
 
-    if (this.#_syntax === 'new')
-      this.jqxGrid.updatebounddata();
+    // if (this.#_syntax === 'old')
+    //   this.updateBoundData('all');
+
+    // if (this.#_syntax === 'new')
+    //   this.jqxGrid.updatebounddata();
   } // end of refresh
 
   /**
